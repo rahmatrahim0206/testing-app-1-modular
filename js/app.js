@@ -2,6 +2,45 @@
 // CENTRAL APPLICATION ENTRY POINT
 // ==========================================================
 
+// Global configuration
+const CONFIG = {
+  SCHOOL_NAME_LONG: "UPT SPF SMP Negeri 3 Makassar",
+  SCHOOL_NAME_SHORT: "SMP Negeri 3 Makassar",
+  SCHOOL_CODE_ABBR: "SPENTIG", 
+  NPSN: "40312436",
+  OPERATOR_NAME: "Rahmat Rahim",
+  RAPOR_URL: "https://rapor.smpn3makassar.sch.id",
+  CUTOFF_DATE: "August 31, 2026 23:59:59",
+  CUTOFF_TITLE: "Cut-Off BOS Reguler 2026",
+  CUTOFF_DESC: "Batas akhir penarikan data siswa untuk dana BOS sekolah.",
+  CUTOFF_FOOTER_TEXT: "Target: 31 Agustus 2026",
+  SECURE_PASS_KEY: "dapohub-secure-universal-key-2026",
+  STORAGE_PREFIX: "dapohub-",
+  IDLE_LIMIT_MINUTES: 15
+};
+
+// State variabel aplikasi
+let activeCategory = 'semua';
+let linksData = [];
+let agendaData = [];
+let notesData = [];
+let waTemplates = [];
+let authenticatorKeys = [];
+let currentDateObj = new Date();
+let qrScannerObj = null;
+let isScanning = false;
+let totpIntervalId = null;
+let toastTimeoutId = null;
+let activeConfirmCallback = null;
+let idleTimeCounter = 0;
+let sessionLocked = false;
+
+const defaultWaTemplates = [
+  { id: "rapor", name: "1. Pengumpulan Nilai E-Rapor", text: `Yth. {nama},\n\nMohon bantuannya untuk segera menginput dan menyinkronkan Nilai Rapor Kelas Anda ke aplikasi E-Rapor ${CONFIG.SCHOOL_NAME_SHORT} sebelum batas waktu pengumpulan.\n\nTerima kasih atas dedikasi dan kerja samanya.\n\nSalam,\nOperator Dapodik` },
+  { id: "data", name: "2. Perbaikan Berkas & NIK Dapodik", text: "Yth. {nama},\n\nMohon kesediaannya untuk memeriksa kembali dan memverifikasi kelengkapan berkas kependudukan, kesesuaian NIK, serta Riwayat Kepangkatan Anda di portal Dapodik sekolah.\n\nHarap hubungi operator jika terdapat kekeliruan.\n\nTerima kasih,\nOperator Dapodik" },
+  { id: "belajar", name: "3. Aktivasi Akun Belajar.id", text: "Yth. {nama},\n\nHarap segera melakukan aktivasi akun pembelajaran Belajar.id Anda demi kelancaran akses rapor pendidikan, platform Merdeka Mengajar, and administrasi dinas lainnya.\n\nJika menemui kendala reset password, harap hubungi Operator sekolah.\n\nTerima kasih,\nOperator Dapodik" }
+];
+
 function renderAll() {
   renderDynamicLinks();
   renderAgenda();
@@ -35,6 +74,7 @@ window.onload = () => {
   
   // Baca Data Terenkripsi Lokal dari Storage
   linksData = secureRead(CONFIG.STORAGE_PREFIX + 'links');
+  
   if (!linksData) {
     // Membaca dari asinkronus default-links.json atau seed cadangan luring
     fetch('data/default-links.json')
@@ -45,6 +85,7 @@ window.onload = () => {
         renderDynamicLinks();
       })
       .catch(() => {
+        // Fallback aman jika dibuka tanpa web server (menggunakan array dari links.js)
         linksData = [...defaultSeedLinks];
         saveLinks();
         renderDynamicLinks();
