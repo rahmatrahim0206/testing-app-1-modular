@@ -1,8 +1,8 @@
 // ==========================================================
-// UTILS, CLOCK, THEME & SESSION ACTIVE CONTROL
+// UTILITY FUNCTIONS, CLOCK, THEME, AND IDLE CONTROL
 // ==========================================================
 
-// Fungsi salin teks luring ke papan klip peramban (Clipboard API fallback)
+// Fungsi Salin Teks ke Clipboard
 function copyText(textToCopy, successMessage) {
   const dummy = document.createElement('textarea');
   dummy.value = textToCopy;
@@ -10,10 +10,10 @@ function copyText(textToCopy, successMessage) {
   dummy.select();
   document.execCommand('copy');
   document.body.removeChild(dummy);
-  showToast(successMessage || "Berhasil disalin!");
+  showToast(successMessage || "Teks berhasil disalin!");
 }
 
-// Fungsi acak sandi aman biner
+// Fungsi Acak Kata Sandi Aman
 function generateSecurePassword() {
   const chars = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789!@#$%^&*()_+";
   let pass = "";
@@ -31,21 +31,21 @@ function copyGeneratedPassword() {
   }
 }
 
-// --- UPDATE JAM & TANGGAL WITA ---
+// Pembaruan Jam & Hari WITA Aktif
 function updateClock() {
   const timeDisplay = document.getElementById('header-time');
   const dateDisplay = document.getElementById('header-date');
   if (!timeDisplay || !dateDisplay) return;
   const now = new Date();
   const utc = now.getTime() + (now.getTimezoneOffset() * 60000);
-  const witaDate = new Date(utc + (3600000 * 8)); // WITA adalah UTC+8
+  const witaDate = new Date(utc + (3600000 * 8)); 
   const days = ['Minggu', 'Senin', 'Selasa', 'Rabu', 'Kamis', 'Jumat', 'Sabtu'];
-  const months = ['Jan', 'Feb', 'Mar', 'Apr', 'Mei', 'Jun', 'Jul', 'Agu', 'Sep', 'Okt', 'Nov', 'Des'];
+  const months = ['Januari', 'Februari', 'Maret', 'April', 'Mei', 'Juni', 'Juli', 'Agustus', 'September', 'Oktober', 'November', 'Desember'];
   timeDisplay.textContent = `${String(witaDate.getHours()).padStart(2, '0')}:${String(witaDate.getMinutes()).padStart(2, '0')}:${String(witaDate.getSeconds()).padStart(2, '0')} WITA`;
   dateDisplay.textContent = `${days[witaDate.getDay()]}, ${witaDate.getDate()} ${months[witaDate.getMonth()]} ${witaDate.getFullYear()}`;
 }
 
-// --- PENGATURAN TEMA GELAP/TERANG ---
+// Pengatur Tema Gelap/Terang
 function toggleTheme() {
   const isDark = document.documentElement.classList.toggle('dark');
   localStorage.setItem('theme', isDark ? 'dark' : 'light');
@@ -54,7 +54,7 @@ function toggleTheme() {
   if (typeof initCalendar === 'function') initCalendar();
 }
 
-// --- PENGATUR STATUS ONLINE/OFFLINE (LOKAL) ---
+// Penunjuk Status Jaringan Online/Offline
 function updateOnlineStatus(isOnline) {
   const bdg = document.getElementById('status-badge');
   const icn = document.getElementById('status-badge-icon');
@@ -72,12 +72,12 @@ function updateOnlineStatus(isOnline) {
     bdg.className = "absolute -bottom-1 -right-1 block h-5 w-5 rounded-full ring-4 ring-white dark:ring-slate-800 bg-amber-500 flex items-center justify-center text-[10px] text-white font-bold transition-colors";
     icn.className = "fa-solid fa-hard-drive";
     txtBdg.className = "inline-flex items-center px-2.5 py-0.5 rounded-full text-[10px] font-semibold bg-amber-50 text-amber-700 dark:bg-amber-950/40 border border-amber-200/50";
-    plse.className = "w-1.5 h-1.5 mr-1.5 rounded-full bg-amber-500 animate-ping";
-    lbl.textContent = "Offline (Lokal)";
+    plse.className = "w-1.5 h-1.5 mr-1.5 rounded-full bg-amber-500";
+    lbl.textContent = "Luring (Lokal)";
   }
 }
 
-// --- DETEKTOR AUTO-LOCK KEAMANAN DATA ---
+// Detektor Kunci Layar Otomatis
 function resetIdleTimer() { 
   if (!sessionLocked) idleTimeCounter = 0; 
 }
@@ -102,6 +102,6 @@ function unlockSession() {
     screen.classList.replace('pointer-events-auto', 'pointer-events-none');
     screen.classList.replace('opacity-100', 'opacity-0');
     card.classList.replace('scale-100', 'scale-95');
-    showToast("Sesi dipulihkan!", "success");
+    showToast("Sesi kerja berhasil dipulihkan!", "success");
   }
 }
