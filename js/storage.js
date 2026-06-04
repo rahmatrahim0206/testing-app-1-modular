@@ -1,5 +1,5 @@
 // ==========================================================
-// SECURE LOCAL STORAGE HANDLER
+// SECURE LOCAL STORAGE HANDLER & DISASTER EMERGENCY RESET
 // ==========================================================
 
 function secureSave(key, rawData) {
@@ -81,4 +81,23 @@ function importBackupData(e) {
     };
     r.readAsText(e.target.files[0]); 
   } 
+}
+
+// --- TOMBOL RESET DARURAT (HAPUS DATA SENSITIF INSTAN) ---
+function triggerEmergencyReset() {
+  showCustomConfirm(
+    "Lakukan Reset Sesi Darurat?", 
+    "PERINGATAN DARURAT: Tindakan ini akan menghapus seluruh data sensitif Anda secara permanen dari browser ini, termasuk kunci keamanan 2FA, catatan penting, agenda kerja, serta tautan kustom yang telah ditambahkan. Sistem akan dimuat ulang ke pengaturan awal.", 
+    () => {
+      const keysToRemove = ['links', 'agendas', 'notes', 'auth-keys', 'wa-templates'];
+      keysToRemove.forEach(key => {
+        localStorage.removeItem(CONFIG.STORAGE_PREFIX + key);
+      });
+      showToast("Prosedur darurat berhasil dijalankan. Memuat ulang sistem...", "error");
+      setTimeout(() => {
+        window.location.reload();
+      }, 1500);
+    }, 
+    'fa-triangle-exclamation'
+  );
 }
