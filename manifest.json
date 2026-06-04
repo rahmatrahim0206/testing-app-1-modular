@@ -1,9 +1,8 @@
 {
-  "id": "/dapo-hub/",
   "name": "DAPO-HUB SPENTIG",
   "short_name": "DAPO-HUB",
   "description": "Portal Integrasi Operator Dapodik & IT SMP Negeri 3 Makassar",
-  "start_url": "./index.html",
+  "start_url": "index.html",
   "display": "standalone",
   "background_color": "#f8fafc",
   "theme_color": "#2563eb",
