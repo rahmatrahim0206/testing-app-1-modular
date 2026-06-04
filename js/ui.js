@@ -1,5 +1,5 @@
 // ==========================================================
-// USER INTERACTION, ASISTEN RENDERING, & PWA SERVICE WORKER
+// RENDER CONTROLLER, CATEGORIES, ASSISTANT WIDGETS & PWA KIT
 // ==========================================================
 
 // --- SISTEM TOAST NOTIFICATION ---
@@ -45,20 +45,20 @@ function closeCustomConfirm(approved = false) {
   activeConfirmCallback = null;
 }
 
-// --- RENDERING DAFTAR TAUTAN (KOLOM TENGAH) ---
+// --- RENDERING DAFTAR TAUTAN ---
 function renderDynamicLinks() {
   const wrapper = document.getElementById('dynamic-links-wrapper');
   if (!wrapper) return;
   wrapper.innerHTML = '';
 
   const catMap = {
-    'utama': { title: 'Portal Utama & Dapodik', icon: 'fa-folder-open', color: 'text-blue-500' },
-    'verval': { title: 'Verval & Validasi', icon: 'fa-shield-halved', color: 'text-emerald-500' },
-    'keuangan': { title: 'BOS & Keuangan', icon: 'fa-wallet', color: 'text-amber-500' },
-    'guru': { title: 'Layanan GTK', icon: 'fa-chalkboard-user', color: 'text-indigo-500' },
-    'kepegawaian': { title: 'Layanan ASN', icon: 'fa-id-card-clip', color: 'text-sky-500' },
-    'ujian': { title: 'Asesmen (ANBK)', icon: 'fa-laptop-code', color: 'text-rose-500' },
-    'daerah': { title: 'Dinas & Daerah', icon: 'fa-city', color: 'text-purple-500' }
+    'utama': { title: 'Dapodik & Portal Utama', icon: 'fa-folder-open', color: 'text-blue-500' },
+    'verval': { title: 'Verifikasi & Validasi (Verval)', icon: 'fa-shield-halved', color: 'text-emerald-500' },
+    'keuangan': { title: 'Anggaran & Keuangan Sekolah', icon: 'fa-wallet', color: 'text-amber-500' },
+    'guru': { title: 'Layanan Pendidik (GTK)', icon: 'fa-chalkboard-user', color: 'text-indigo-500' },
+    'kepegawaian': { title: 'Layanan Kepegawaian (ASN)', icon: 'fa-id-card-clip', color: 'text-sky-500' },
+    'ujian': { title: 'Asesmen Nasional (ANBK)', icon: 'fa-laptop-code', color: 'text-rose-500' },
+    'daerah': { title: 'Portal Dinas & Daerah', icon: 'fa-city', color: 'text-purple-500' }
   };
 
   const q = document.getElementById('search-input').value.toLowerCase().trim();
@@ -158,7 +158,7 @@ function clearSearchInput() {
   filterLinksOrKeys(); 
 }
 
-// --- SISTEM KONTROL TAB ASISTEN (KOLOM KANAN) ---
+// --- SISTEM PANEL TAB ASISTEN (KANAN) ---
 function switchAsistenTab(t) {
   ['agenda', 'kalender', 'alat'].forEach(id => {
     const btn = document.getElementById(`btn-tab-${id}`);
@@ -199,7 +199,56 @@ function switchSubTab(t) {
   });
 }
 
-// --- FUNGSI ASISTEN: AGENDA KERJA ---
+// Pembuka/Penutup Modul Modal Dialog
+function openAddAgendaModal() {
+  const m = document.getElementById('add-agenda-modal');
+  if (m) {
+    m.classList.remove('opacity-0', 'pointer-events-none');
+    m.children[0].classList.replace('scale-95', 'scale-100');
+  }
+}
+
+function closeAddAgendaModal() {
+  const m = document.getElementById('add-agenda-modal');
+  if (m) {
+    m.classList.add('opacity-0', 'pointer-events-none');
+    m.children[0].classList.replace('scale-100', 'scale-95');
+  }
+}
+
+function openAddMemoModal() {
+  const m = document.getElementById('add-memo-modal');
+  if (m) {
+    m.classList.remove('opacity-0', 'pointer-events-none');
+    m.children[0].classList.replace('scale-95', 'scale-100');
+  }
+}
+
+function closeAddMemoModal() {
+  const m = document.getElementById('add-memo-modal');
+  if (m) {
+    m.classList.add('opacity-0', 'pointer-events-none');
+    m.children[0].classList.replace('scale-100', 'scale-95');
+  }
+}
+
+function openAddLinkModal() {
+  const m = document.getElementById('add-link-modal');
+  if (m) {
+    m.classList.remove('opacity-0', 'pointer-events-none');
+    m.children[0].classList.replace('scale-95', 'scale-100');
+  }
+}
+
+function closeAddLinkModal() {
+  const m = document.getElementById('add-link-modal');
+  if (m) {
+    m.classList.add('opacity-0', 'pointer-events-none');
+    m.children[0].classList.replace('scale-100', 'scale-95');
+  }
+}
+
+// --- TAB ASISTEN: AGENDA KERJA ---
 function saveAgenda() { secureSave(CONFIG.STORAGE_PREFIX + 'agendas', agendaData); }
 
 function renderAgenda() {
@@ -233,7 +282,7 @@ function addAgendaItem() {
     renderAgenda();
     closeAddAgendaModal();
     document.getElementById('agenda-input-text').value = '';
-    showToast("Tugas baru berhasil disimpan!");
+    showToast("Tugas baru berhasil disimpan ke agenda!");
   }
 }
 
@@ -250,19 +299,19 @@ function deleteAgendaItem(id) {
   agendaData = agendaData.filter(x=>x.id!==id);
   saveAgenda();
   renderAgenda();
-  showToast("Tugas dihapus.");
+  showToast("Tugas berhasil dihapus.");
 }
 
 function updateCountdownTask() {
   const txt = document.getElementById('countdown-active-task-text');
   const btn = document.getElementById('countdown-active-task-btn');
   const p = agendaData.find(t=>!t.done);
-  if(txt) txt.textContent = p ? p.text : "✅ Semua tugas sinkronisasi selesai!";
+  if(txt) txt.textContent = p ? p.text : "✅ Semua agenda pekerjaan telah selesai!";
   if(btn) p ? btn.classList.remove('hidden') : btn.classList.add('hidden');
   if(btn && p) btn.onclick = () => toggleTaskDone(p.id);
 }
 
-// --- FUNGSI ASISTEN: KALENDER KERJA ---
+// --- TAB ASISTEN: KALENDER KERJA ---
 function initCalendar() {
   const names = ["Januari","Februari","Maret","April","Mei","Juni","Juli","Agustus","September","Oktober","November","Desember"];
   const y = currentDateObj.getFullYear();
@@ -278,14 +327,14 @@ function initCalendar() {
   const today = new Date();
   for(let d=1; d<=td; d++) {
     const isT = today.getDate()===d && today.getMonth()===m && today.getFullYear()===y;
-    c.innerHTML += `<div onclick="document.getElementById('calendar-event-display').innerHTML='<p class=\\'text-[10px] font-bold text-blue-600 dark:text-blue-400\\'><i class=\\'fa-solid fa-circle-info\\'></i> Tgl: ${d} ${names[m]} ${y}</p>'" class="p-1 rounded cursor-pointer ${isT ? 'bg-blue-600 text-white font-bold':'hover:bg-blue-50 dark:hover:bg-slate-700'}">${d}</div>`;
+    c.innerHTML += `<div onclick="document.getElementById('calendar-event-display').innerHTML='<p class=\\'text-[10px] font-bold text-blue-600 dark:text-blue-400\\'><i class=\\'fa-solid fa-circle-info\\'></i> Hari Penting: ${d} ${names[m]} ${y}</p>'" class="p-1 rounded cursor-pointer ${isT ? 'bg-blue-600 text-white font-bold':'hover:bg-blue-50 dark:hover:bg-slate-700'}">${d}</div>`;
   }
 }
 
 function prevMonth() { currentDateObj.setMonth(currentDateObj.getMonth()-1); initCalendar(); }
 function nextMonth() { currentDateObj.setMonth(currentDateObj.getMonth()+1); initCalendar(); }
 
-// --- FUNGSI ASISTEN: BUKU SAKU (MEMO) ---
+// --- TAB ASISTEN: BUKU SAKU MEMO ---
 function renderQuickNotes() {
   const c = document.getElementById('quick-notes-list');
   if(!c) return;
@@ -312,11 +361,11 @@ function addQuickNote() {
     closeAddMemoModal();
     document.getElementById('note-title-input').value = '';
     document.getElementById('note-body-input').value = '';
-    showToast("Memo berhasil ditambahkan!");
+    showToast("Memo catatan berhasil disimpan!");
   }
 }
 
-// --- FUNGSI ASISTEN: BROADCAST WHATSAPP ---
+// --- TAB ASISTEN: BROADCAST WHATSAPP ---
 function populateWaSelect() {
   const s = document.getElementById('wa-template-select');
   if(s) {
@@ -327,12 +376,29 @@ function populateWaSelect() {
 
 function copyBroadcastMessage() {
   const t = waTemplates.find(x=>x.id===document.getElementById('wa-template-select').value);
-  if(t) copyText(t.text.replace(/{nama}/g, document.getElementById('wa-recipient-name').value || "Bapak/Ibu"));
+  if(t) copyText(t.text.replace(/{nama}/g, document.getElementById('wa-recipient-name').value || "Bapak/Ibu Guru"), "Pesan siaran WhatsApp berhasil disalin!");
 }
 
 function sendBroadcastWhatsApp() {
   const t = waTemplates.find(x=>x.id===document.getElementById('wa-template-select').value);
-  if(t) window.open(`https://api.whatsapp.com/send?text=${encodeURIComponent(t.text.replace(/{nama}/g, document.getElementById('wa-recipient-name').value || "Bapak/Ibu"))}`, '_blank');
+  if(t) window.open(`https://api.whatsapp.com/send?text=${encodeURIComponent(t.text.replace(/{nama}/g, document.getElementById('wa-recipient-name').value || "Bapak/Ibu Guru"))}`, '_blank');
+}
+
+function openTemplatesModal() {
+  const m = document.getElementById('templates-modal');
+  if (m) {
+    m.classList.remove('opacity-0', 'pointer-events-none');
+    m.children[0].classList.replace('scale-95', 'scale-100');
+    renderTemplatesList();
+  }
+}
+
+function closeTemplatesModal() {
+  const m = document.getElementById('templates-modal');
+  if (m) {
+    m.classList.add('opacity-0', 'pointer-events-none');
+    m.children[0].classList.replace('scale-100', 'scale-95');
+  }
 }
 
 function renderTemplatesList() {
@@ -347,7 +413,7 @@ function renderTemplatesList() {
           <p class="text-[10px] text-slate-500 truncate mt-0.5">${t.text}</p>
         </div>
         <div class="flex gap-1.5 flex-shrink-0">
-          <button onclick="editTemplate('${t.id}')" class="text-blue-500 hover:text-blue-700 transition" title="Edit"><i class="fa-solid fa-pen-to-square"></i></button>
+          <button onclick="editTemplate('${t.id}')" class="text-blue-500 hover:text-blue-700 transition" title="Ubah"><i class="fa-solid fa-pen-to-square"></i></button>
           <button onclick="deleteTemplate('${t.id}')" class="text-rose-500 hover:text-rose-700 transition" title="Hapus"><i class="fa-solid fa-trash-can"></i></button>
         </div>
       </div>`;
@@ -404,7 +470,7 @@ function editTemplate(id) {
 }
 
 function deleteTemplate(id) {
-  showCustomConfirm("Hapus Template?", "Template pesan ini akan dihapus secara permanen.", () => {
+  showCustomConfirm("Hapus Template?", "Template siaran pesan ini akan dihapus secara permanen.", () => {
     waTemplates = waTemplates.filter(x => x.id !== id);
     secureSave(CONFIG.STORAGE_PREFIX + 'wa-templates', waTemplates);
     populateWaSelect();
@@ -413,7 +479,7 @@ function deleteTemplate(id) {
   }, 'fa-trash-can');
 }
 
-// --- KONTROL DOWNLAND DEPLOYMENT KIT PWA ---
+// --- PWA OFFLINE DEPLOYMENT KIT DOWNLOADER ---
 function downloadPwaFile(fileType) {
   let content = "", filename = "", mimeType = "";
   if (fileType === 'manifest') {
@@ -430,7 +496,7 @@ function downloadPwaFile(fileType) {
   a.click();
   document.body.removeChild(a);
   URL.revokeObjectURL(url);
-  showToast(`Berkas ${filename} berhasil diunduh! Taruh berkas ini di root folder bersama index.html Anda.`, "success");
+  showToast(`Berkas ${filename} berhasil diunduh! Silakan taruh di folder root Anda.`, "success");
 }
 
 function registerMainServiceWorker() {
@@ -439,20 +505,20 @@ function registerMainServiceWorker() {
   if ('serviceWorker' in navigator) {
     navigator.serviceWorker.register('./sw.js')
       .then(() => {
-        if (statusText) statusText.textContent = "Aktif (Terdaftar)";
+        if (statusText) statusText.textContent = "Aktif (Layanan Luring Siap)";
         if (statusDot) statusDot.className = "w-1.5 h-1.5 rounded-full bg-emerald-500";
       })
       .catch(() => {
-        if (statusText) statusText.textContent = "Siap Diinstal (Gunakan Kit)";
+        if (statusText) statusText.textContent = "Dukung Luring (Gunakan Paket)";
         if (statusDot) statusDot.className = "w-1.5 h-1.5 rounded-full bg-amber-500 animate-pulse";
       });
   } else {
-    if (statusText) statusText.textContent = "Tidak Didukung Browser";
+    if (statusText) statusText.textContent = "Tidak Didukung Peramban";
     if (statusDot) statusDot.className = "w-1.5 h-1.5 rounded-full bg-rose-500";
   }
 }
 
-// --- REAL-TIME LIVE DOWNWARD COUNTDOWN CUT-OFF ---
+// Real-time Countdown Cut-off BOS
 function startCutOffCountdown() {
   const targetDate = new Date(CONFIG.CUTOFF_DATE).getTime();
   function updateCountdown() {
@@ -480,7 +546,7 @@ function startCutOffCountdown() {
   setInterval(updateCountdown, 1000);
 }
 
-// Data Manifest & SW Source untuk Download Kit PWA
+// Berkas Sumber Manifest & Service Worker untuk Unduhan Paket Luring
 const manifestJsonText = `{
   "name": "DAPO-HUB SPENTIG",
   "short_name": "DAPO-HUB",
