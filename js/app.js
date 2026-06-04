@@ -9,7 +9,7 @@ const CONFIG = {
   SCHOOL_CODE_ABBR: "SPENTIG", 
   NPSN: "40312436",
   OPERATOR_NAME: "Rahmat Rahim",
-  RAPOR_URL: "https://rapor.smpn3makassar.sch.id",
+  RAPOR_URL: "https://rapor.smpn3mks.sch.id",
   CUTOFF_DATE: "August 31, 2026 23:59:59",
   CUTOFF_TITLE: "Cut-Off BOS Reguler 2026",
   CUTOFF_DESC: "Batas akhir penarikan data siswa untuk dana BOS sekolah.",
@@ -117,6 +117,10 @@ window.onload = () => {
   const okBtn = document.getElementById('btn-confirm-ok');
   if (cancelBtn) cancelBtn.onclick = () => closeCustomConfirm(false);
   if (okBtn) okBtn.onclick = () => closeCustomConfirm(true);
+
+  // Pengikat Event Online / Offline di Runtime
+  window.addEventListener('offline', () => { showToast('⚠️ Mode Offline Aktif.', 'warning'); updateOnlineStatus(false); });
+  window.addEventListener('online', () => { showToast('⚡ Portal terhubung daring.', 'success'); updateOnlineStatus(true); });
 
   // Detektor Aktivitas Kerja (Auto-Lock Sesi Kerja)
   ['mousemove', 'keypress', 'click', 'scroll', 'touchstart'].forEach(e => {
