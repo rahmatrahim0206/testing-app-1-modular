@@ -1,5 +1,5 @@
 // ==========================================================
-// SECURE LOCAL STORAGE HANDLER & DISASTER EMERGENCY RESET
+// SECURE DATA STORAGE, SYSTEM BACKUP, AND DISASTER RESET
 // ==========================================================
 
 function secureSave(key, rawData) {
@@ -32,7 +32,7 @@ function secureRead(key) {
   }
 }
 
-// Modul Ekspor Backup Data
+// Prosedur Ekspor File Pencadangan
 function exportBackupData() { 
   const payload = {
     links: linksData,
@@ -44,11 +44,11 @@ function exportBackupData() {
   const u = URL.createObjectURL(b);
   const a = document.createElement('a');
   a.href = u;
-  a.download = 'backup_dapohub.json';
+  a.download = `cadangan_dapohub_${CONFIG.SCHOOL_CODE_ABBR.toLowerCase()}.json`;
   document.body.appendChild(a);
   a.click();
   a.remove();
-  showToast("Cadangan sistem berhasil diekspor (Backup)!");
+  showToast("Berkas pencadangan sistem berhasil diekspor!");
 }
 
 function triggerImportData() { 
@@ -56,7 +56,7 @@ function triggerImportData() {
   if (importInput) importInput.click(); 
 }
 
-// Modul Restore Data
+// Prosedur Impor File Pemulihan
 function importBackupData(e) { 
   if (e.target.files[0]) { 
     const r = new FileReader();
@@ -74,26 +74,26 @@ function importBackupData(e) {
         saveAuthenticatorKeys();
         
         renderAll();
-        showToast("Pemulihan data cadangan sukses (Restore)!"); 
+        showToast("Seluruh data sistem berhasil dipulihkan!"); 
       } catch (ex) {
-        showToast("Format berkas backup tidak valid.", "error");
+        showToast("Format berkas cadangan tidak dikenali atau rusak.", "error");
       } 
     };
     r.readAsText(e.target.files[0]); 
   } 
 }
 
-// --- TOMBOL RESET DARURAT (HAPUS DATA SENSITIF INSTAN) ---
+// Tombol Prosedur Reset Darurat (Menghapus Data Sensitif dari Browser Instan)
 function triggerEmergencyReset() {
   showCustomConfirm(
-    "Lakukan Reset Sesi Darurat?", 
-    "PERINGATAN DARURAT: Tindakan ini akan menghapus seluruh data sensitif Anda secara permanen dari browser ini, termasuk kunci keamanan 2FA, catatan penting, agenda kerja, serta tautan kustom yang telah ditambahkan. Sistem akan dimuat ulang ke pengaturan awal.", 
+    "Lakukan Atur Ulang Darurat?", 
+    "PERINGATAN SENSITIF: Tindakan ini akan menghapus seluruh data Anda secara permanen dari browser ini, termasuk kunci keamanan 2FA, catatan memo, agenda, serta tautan kustom. Sistem akan dimuat ulang ke pengaturan awal pabrik.", 
     () => {
       const keysToRemove = ['links', 'agendas', 'notes', 'auth-keys', 'wa-templates'];
       keysToRemove.forEach(key => {
         localStorage.removeItem(CONFIG.STORAGE_PREFIX + key);
       });
-      showToast("Prosedur darurat berhasil dijalankan. Memuat ulang sistem...", "error");
+      showToast("Prosedur darurat dijalankan. Memuat ulang sistem...", "error");
       setTimeout(() => {
         window.location.reload();
       }, 1500);
