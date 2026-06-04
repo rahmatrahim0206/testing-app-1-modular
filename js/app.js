@@ -1,44 +1,45 @@
 // ==========================================================
-// CENTRAL APPLICATION ENTRY POINT
+// CENTRAL APPLICATION ENTRY POINT & GLOBAL STATE DECLARATIONS
 // ==========================================================
 
-// Global configuration
-const CONFIG = {
+// Konfigurasi Global Aplikasi
+var CONFIG = {
   SCHOOL_NAME_LONG: "UPT SPF SMP Negeri 3 Makassar",
   SCHOOL_NAME_SHORT: "SMP Negeri 3 Makassar",
   SCHOOL_CODE_ABBR: "SPENTIG", 
   NPSN: "40312436",
   OPERATOR_NAME: "Rahmat Rahim",
-  RAPOR_URL: "https://rapor.smpn3mks.sch.id",
+  RAPOR_URL: "https://rapor.smpn3makassar.sch.id",
   CUTOFF_DATE: "August 31, 2026 23:59:59",
-  CUTOFF_TITLE: "Cut-Off BOS Reguler 2026",
-  CUTOFF_DESC: "Batas akhir penarikan data siswa untuk dana BOS sekolah.",
-  CUTOFF_FOOTER_TEXT: "Target: 31 Agustus 2026",
+  CUTOFF_TITLE: "Batas Akhir Pemutakhiran Dapodik 2026",
+  CUTOFF_DESC: "Batas waktu sinkronisasi data profil sekolah dan peserta didik untuk perhitungan dana BOS.",
+  CUTOFF_FOOTER_TEXT: "Target Batas: 31 Agustus 2026",
   SECURE_PASS_KEY: "dapohub-secure-universal-key-2026",
   STORAGE_PREFIX: "dapohub-",
   IDLE_LIMIT_MINUTES: 15
 };
 
-// State variabel aplikasi
-let activeCategory = 'semua';
-let linksData = [];
-let agendaData = [];
-let notesData = [];
-let waTemplates = [];
-let authenticatorKeys = [];
-let currentDateObj = new Date();
-let qrScannerObj = null;
-let isScanning = false;
-let totpIntervalId = null;
-let toastTimeoutId = null;
-let activeConfirmCallback = null;
-let idleTimeCounter = 0;
-let sessionLocked = false;
+// Deklarasi Variabel State Global (Pencegahan Bug Temporal Dead Zone)
+var activeCategory = 'semua';
+var linksData = [];
+var agendaData = [];
+var notesData = [];
+var waTemplates = [];
+var authenticatorKeys = [];
+var currentDateObj = new Date();
+var qrScannerObj = null;
+var isScanning = false;
+var totpIntervalId = null;
+var toastTimeoutId = null;
+var activeConfirmCallback = null;
+var idleTimeCounter = 0;
+var sessionLocked = false;
 
-const defaultWaTemplates = [
-  { id: "rapor", name: "1. Pengumpulan Nilai E-Rapor", text: `Yth. {nama},\n\nMohon bantuannya untuk segera menginput dan menyinkronkan Nilai Rapor Kelas Anda ke aplikasi E-Rapor ${CONFIG.SCHOOL_NAME_SHORT} sebelum batas waktu pengumpulan.\n\nTerima kasih atas dedikasi dan kerja samanya.\n\nSalam,\nOperator Dapodik` },
-  { id: "data", name: "2. Perbaikan Berkas & NIK Dapodik", text: "Yth. {nama},\n\nMohon kesediaannya untuk memeriksa kembali dan memverifikasi kelengkapan berkas kependudukan, kesesuaian NIK, serta Riwayat Kepangkatan Anda di portal Dapodik sekolah.\n\nHarap hubungi operator jika terdapat kekeliruan.\n\nTerima kasih,\nOperator Dapodik" },
-  { id: "belajar", name: "3. Aktivasi Akun Belajar.id", text: "Yth. {nama},\n\nHarap segera melakukan aktivasi akun pembelajaran Belajar.id Anda demi kelancaran akses rapor pendidikan, platform Merdeka Mengajar, and administrasi dinas lainnya.\n\nJika menemui kendala reset password, harap hubungi Operator sekolah.\n\nTerima kasih,\nOperator Dapodik" }
+// Template Baku Siaran WhatsApp (Sopan & Persuasif)
+var defaultWaTemplates = [
+  { id: "rapor", name: "1. Pengumpulan Nilai E-Rapor", text: `Assalamu'alaikum Wr. Wb. Yth. Bapak/Ibu Guru {nama},\n\nDengan hormat, mohon bantuannya untuk segera melakukan pengisian dan sinkronisasi Nilai Rapor Kelas Anda pada aplikasi E-Rapor ${CONFIG.SCHOOL_NAME_SHORT} sebelum batas waktu pengumpulan.\n\nAtas dedikasi, kerja sama, dan perhatian Bapak/Ibu, kami ucapkan terima kasih.\n\nHormat kami,\nOperator Dapodik & IT` },
+  { id: "data", name: "2. Verifikasi NIK & Berkas Dapodik", text: `Assalamu'alaikum Wr. Wb. Yth. Bapak/Ibu {nama},\n\nSehubungan dengan proses pemutakhiran data berkala, mohon kesediaan Bapak/Ibu untuk memeriksa kembali kesesuaian Nomor Induk Kependudukan (NIK) serta kelengkapan riwayat kerja di portal Dapodik.\n\nJika terdapat kekeliruan data, silakan menghubungi Operator Sekolah untuk perbaikan.\n\nTerima kasih,\nOperator Dapodik & IT` },
+  { id: "belajar", name: "3. Aktivasi Akun Belajar.id", text: `Yth. Bapak/Ibu Guru {nama},\n\nMohon bantuannya untuk melakukan aktivasi akun pembelajaran Belajar.id Anda guna kelancaran akses ke platform Merdeka Mengajar (PMM), Rapor Pendidikan, dan administrasi kementerian lainnya.\n\nJika membutuhkan bantuan dalam pemulihan kata sandi, silakan menghubungi tim IT sekolah.\n\nSalam hormat,\nOperator Dapodik & IT` }
 ];
 
 function renderAll() {
@@ -59,24 +60,23 @@ function applyConfigToDOM() {
   const s = document.getElementById('view-school-profile');
   if (s) {
     s.innerHTML = `<i class="fa-solid fa-school text-blue-500"></i> ${CONFIG.SCHOOL_NAME_LONG}`;
-    s.onclick = () => copyText(CONFIG.SCHOOL_NAME_LONG, "Nama sekolah disalin!");
+    s.onclick = () => copyText(CONFIG.SCHOOL_NAME_LONG, "Nama sekolah berhasil disalin!");
   }
   const n = document.getElementById('view-npsn-profile');
   if (n) {
     n.innerHTML = `<i class="fa-solid fa-fingerprint text-sky-500"></i> NPSN: ${CONFIG.NPSN}`;
-    n.onclick = () => copyText(CONFIG.NPSN, "NPSN disalin!");
+    n.onclick = () => copyText(CONFIG.NPSN, "NPSN sekolah berhasil disalin!");
   }
 }
 
-// Inisialisasi jendela peramban utama dimuat
+// Inisialisasi Utama Saat Halaman Dimuat
 window.onload = () => {
   applyConfigToDOM();
   
-  // Baca Data Terenkripsi Lokal dari Storage
+  // Membaca Data Cadangan Terenkripsi Lokal
   linksData = secureRead(CONFIG.STORAGE_PREFIX + 'links');
   
   if (!linksData) {
-    // Membaca dari asinkronus default-links.json atau seed cadangan luring
     fetch('data/default-links.json')
       .then(res => res.json())
       .then(data => {
@@ -85,7 +85,7 @@ window.onload = () => {
         renderDynamicLinks();
       })
       .catch(() => {
-        // Fallback aman jika dibuka tanpa web server (menggunakan array dari links.js)
+        // Fallback jika tidak menggunakan server lokal (CORS file:// protocol)
         linksData = [...defaultSeedLinks];
         saveLinks();
         renderDynamicLinks();
@@ -94,7 +94,7 @@ window.onload = () => {
   
   agendaData = secureRead(CONFIG.STORAGE_PREFIX + 'agendas') || [
     { id: "ag-1", text: "Koordinasi pemutakhiran data rombel kelas 7, 8, dan 9.", done: false, createdAt: Date.now() },
-    { id: "ag-2", text: "Verifikasi validitas residu NIK siswa pada portal VervalPD.", done: false, createdAt: Date.now() + 1 }
+    { id: "ag-2", text: "Verifikasi keaktifan dan residu NIK siswa pada portal VervalPD.", done: false, createdAt: Date.now() + 1 }
   ];
   notesData = secureRead(CONFIG.STORAGE_PREFIX + 'notes') || [];
   authenticatorKeys = secureRead(CONFIG.STORAGE_PREFIX + 'auth-keys') || [
@@ -102,7 +102,7 @@ window.onload = () => {
   ];
   waTemplates = secureRead(CONFIG.STORAGE_PREFIX + 'wa-templates') || [...defaultWaTemplates];
   
-  // Memicu Render Visual Pertama Kali
+  // Menjalankan Rendering & Engine Latar Belakang
   renderAll();
   initCalendar();
   populateWaSelect();
@@ -112,17 +112,17 @@ window.onload = () => {
   registerMainServiceWorker();
   updateOnlineStatus(navigator.onLine);
 
-  // Penyelarasan event modal konfirmasi kustom
+  // Pemasangan Event Listener Modal Konfirmasi
   const cancelBtn = document.getElementById('btn-confirm-cancel');
   const okBtn = document.getElementById('btn-confirm-ok');
   if (cancelBtn) cancelBtn.onclick = () => closeCustomConfirm(false);
   if (okBtn) okBtn.onclick = () => closeCustomConfirm(true);
 
-  // Pengikat Event Online / Offline di Runtime
-  window.addEventListener('offline', () => { showToast('⚠️ Mode Offline Aktif.', 'warning'); updateOnlineStatus(false); });
-  window.addEventListener('online', () => { showToast('⚡ Portal terhubung daring.', 'success'); updateOnlineStatus(true); });
+  // Penanganan Status Koneksi Runtime
+  window.addEventListener('offline', () => { showToast('⚠️ Mode Luring (Offline) Aktif.', 'warning'); updateOnlineStatus(false); });
+  window.addEventListener('online', () => { showToast('⚡ Portal terhubung kembali dengan jaringan.', 'success'); updateOnlineStatus(true); });
 
-  // Detektor Aktivitas Kerja (Auto-Lock Sesi Kerja)
+  // Detektor Keaktifan Sesi (Auto-Lock)
   ['mousemove', 'keypress', 'click', 'scroll', 'touchstart'].forEach(e => {
     document.addEventListener(e, resetIdleTimer);
   });
