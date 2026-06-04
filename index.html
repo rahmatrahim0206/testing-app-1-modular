@@ -75,7 +75,7 @@
             <i id="theme-icon" class="fa-solid fa-moon"></i>
           </button>
           <!-- Tombol Reset Sesi Darurat -->
-          <button onclick="triggerEmergencyReset()" class="p-2 sm:p-2.5 rounded-xl bg-rose-100 dark:bg-rose-950/40 hover:bg-rose-200 dark:hover:bg-rose-900/60 text-rose-600 dark:text-rose-400 transition-all duration-200" title="Reset Darurat Sesi dan Penghapusan Data Permanen" aria-label="Reset Darurat">
+          <button onclick="triggerEmergencyReset()" class="p-2 sm:p-2.5 rounded-xl bg-rose-100 dark:bg-rose-950/40 hover:bg-rose-200 dark:hover:bg-rose-900/60 text-rose-600 dark:text-rose-400 transition-all duration-200" title="Atur Ulang Darurat Sesi dan Penghapusan Data Permanen" aria-label="Reset Darurat">
             <i class="fa-solid fa-power-off"></i>
           </button>
         </div>
@@ -114,11 +114,11 @@
               </div>
             </div>
             <div class="flex items-center justify-center gap-2 w-full lg:w-auto flex-wrap">
-              <a href="http://localhost:5774" target="_blank" class="w-11 h-11 rounded-xl bg-blue-600 flex items-center justify-center text-white shadow-md hover:bg-blue-700 transition animate-pulse" title="Dapodik Lokal"><i class="fa-solid fa-laptop text-lg"></i></a>
-              <button onclick="openAddLinkModal()" class="w-11 h-11 rounded-xl bg-emerald-600 flex items-center justify-center text-white shadow-md hover:bg-emerald-700 transition" title="Tambah Link"><i class="fa-solid fa-plus text-lg"></i></button>
-              <button onclick="resetToDefaultLinks()" class="w-11 h-11 rounded-xl bg-amber-500 flex items-center justify-center text-white shadow-md hover:bg-amber-600 transition" title="Reset Links"><i class="fa-solid fa-arrows-rotate text-lg"></i></button>
-              <button onclick="exportBackupData()" class="w-11 h-11 rounded-xl bg-indigo-600 flex items-center justify-center text-white shadow-md hover:bg-indigo-700 transition" title="Pencadangan Data (Backup)"><i class="fa-solid fa-cloud-arrow-down text-lg"></i></button>
-              <button onclick="triggerImportData()" class="w-11 h-11 rounded-xl bg-teal-600 flex items-center justify-center text-white shadow-md hover:bg-teal-700 transition" title="Pemulihan Data (Restore)"><i class="fa-solid fa-cloud-arrow-up text-lg"></i></button>
+              <a href="http://localhost:5774" target="_blank" class="w-11 h-11 rounded-xl bg-blue-600 flex items-center justify-center text-white shadow-md hover:bg-blue-700 transition animate-pulse" title="Akses Dapodik Lokal"><i class="fa-solid fa-laptop text-lg"></i></a>
+              <button onclick="openAddLinkModal()" class="w-11 h-11 rounded-xl bg-emerald-600 flex items-center justify-center text-white shadow-md hover:bg-emerald-700 transition" title="Tambah Tautan Baru"><i class="fa-solid fa-plus text-lg"></i></button>
+              <button onclick="resetToDefaultLinks()" class="w-11 h-11 rounded-xl bg-amber-500 flex items-center justify-center text-white shadow-md hover:bg-amber-600 transition" title="Atur Ulang ke Tautan Standar"><i class="fa-solid fa-arrows-rotate text-lg"></i></button>
+              <button onclick="exportBackupData()" class="w-11 h-11 rounded-xl bg-indigo-600 flex items-center justify-center text-white shadow-md hover:bg-indigo-700 transition" title="Cadangkan Data Portal (Pencadangan)"><i class="fa-solid fa-cloud-arrow-down text-lg"></i></button>
+              <button onclick="triggerImportData()" class="w-11 h-11 rounded-xl bg-teal-600 flex items-center justify-center text-white shadow-md hover:bg-teal-700 transition" title="Pulihkan Data Portal (Pemulihan)"><i class="fa-solid fa-cloud-arrow-up text-lg"></i></button>
             </div>
           </div>
         </div>
@@ -130,31 +130,31 @@
       <div class="grid grid-cols-1 lg:grid-cols-12 gap-6 sm:gap-8 mt-6">
         
         <!-- KOLOM KIRI (Navigasi Kategori) -->
-        <aside aria-label="Navigasi Kategori" class="lg:col-span-2 lg:sticky lg:top-20 h-fit space-y-6">
+        <aside class="lg:col-span-2 lg:sticky lg:top-20 h-fit space-y-6">
           <div class="bg-white dark:bg-slate-800 p-4 rounded-3xl border border-slate-200/60 dark:border-slate-700/60 shadow-md">
             <h3 class="text-[10px] font-black uppercase tracking-widest text-slate-400 mb-4 flex items-center gap-1.5"><i class="fa-solid fa-layer-group text-blue-500"></i> Kategori</h3>
             <nav class="flex lg:flex-col overflow-x-auto no-scrollbar gap-2 lg:gap-1.5" id="category-tabs">
               <button onclick="selectCategory('semua')" data-category="semua" class="category-tab inline-flex lg:flex items-center justify-between w-auto lg:w-full px-4 py-2.5 text-xs font-bold rounded-xl bg-blue-600 text-white shadow-md"><span>Semua</span> <span id="badge-semua" class="ml-1.5 bg-white/20 px-1.5 py-0.5 rounded text-[10px] font-mono">0</span></button>
-              <button onclick="selectCategory('utama')" data-category="utama" class="category-tab inline-flex lg:flex items-center justify-between w-auto lg:w-full px-4 py-2.5 text-xs font-bold rounded-xl bg-slate-100 text-slate-600 dark:bg-slate-800 dark:text-slate-400 hover:bg-slate-200"><span>Dapodik</span> <span id="badge-utama" class="ml-1.5 bg-slate-200 dark:bg-slate-700 px-1.5 py-0.5 rounded text-[10px] font-mono">0</span></button>
-              <button onclick="selectCategory('verval')" data-category="verval" class="category-tab inline-flex lg:flex items-center justify-between w-auto lg:w-full px-4 py-2.5 text-xs font-bold rounded-xl bg-slate-100 text-slate-600 dark:bg-slate-800 dark:text-slate-400 hover:bg-slate-200"><span>Verval</span> <span id="badge-verval" class="ml-1.5 bg-slate-200 dark:bg-slate-700 px-1.5 py-0.5 rounded text-[10px] font-mono">0</span></button>
-              <button onclick="selectCategory('keuangan')" data-category="keuangan" class="category-tab inline-flex lg:flex items-center justify-between w-auto lg:w-full px-4 py-2.5 text-xs font-bold rounded-xl bg-slate-100 text-slate-600 dark:bg-slate-800 dark:text-slate-400 hover:bg-slate-200"><span>Keuangan</span> <span id="badge-keuangan" class="ml-1.5 bg-slate-200 dark:bg-slate-700 px-1.5 py-0.5 rounded text-[10px] font-mono">0</span></button>
-              <button onclick="selectCategory('guru')" data-category="guru" class="category-tab inline-flex lg:flex items-center justify-between w-auto lg:w-full px-4 py-2.5 text-xs font-bold rounded-xl bg-slate-100 text-slate-600 dark:bg-slate-800 dark:text-slate-400 hover:bg-slate-200"><span>GTK</span> <span id="badge-guru" class="ml-1.5 bg-slate-200 dark:bg-slate-700 px-1.5 py-0.5 rounded text-[10px] font-mono">0</span></button>
-              <button onclick="selectCategory('kepegawaian')" data-category="kepegawaian" class="category-tab inline-flex lg:flex items-center justify-between w-auto lg:w-full px-4 py-2.5 text-xs font-bold rounded-xl bg-slate-100 text-slate-600 dark:bg-slate-800 dark:text-slate-400 hover:bg-slate-200"><span>ASN</span> <span id="badge-kepegawaian" class="ml-1.5 bg-slate-200 dark:bg-slate-700 px-1.5 py-0.5 rounded text-[10px] font-mono">0</span></button>
-              <button onclick="selectCategory('2fa_auth')" data-category="2fa_auth" class="category-tab inline-flex lg:flex items-center justify-between w-auto lg:w-full px-4 py-2.5 text-xs font-bold rounded-xl bg-slate-100 text-slate-600 dark:bg-slate-800 dark:text-slate-400 hover:bg-slate-200"><span class="flex items-center gap-1"><i class="fa-solid fa-shield-halved text-blue-500"></i> 2FA Hub</span> <span id="badge-2fa_auth" class="ml-1.5 bg-slate-200 dark:bg-slate-700 px-1.5 py-0.5 rounded text-[10px] font-mono">0</span></button>
-              <button onclick="selectCategory('ujian')" data-category="ujian" class="category-tab inline-flex lg:flex items-center justify-between w-auto lg:w-full px-4 py-2.5 text-xs font-bold rounded-xl bg-slate-100 text-slate-600 dark:bg-slate-800 dark:text-slate-400 hover:bg-slate-200"><span>ANBK</span> <span id="badge-ujian" class="ml-1.5 bg-slate-200 dark:bg-slate-700 px-1.5 py-0.5 rounded text-[10px] font-mono">0</span></button>
+              <button onclick="selectCategory('utama')" data-category="utama" class="category-tab inline-flex lg:flex items-center justify-between w-auto lg:w-full px-4 py-2.5 text-xs font-bold rounded-xl bg-slate-100 text-slate-600 dark:bg-slate-800 dark:text-slate-400 hover:bg-slate-200"><span>Dapodik Utama</span> <span id="badge-utama" class="ml-1.5 bg-slate-200 dark:bg-slate-700 px-1.5 py-0.5 rounded text-[10px] font-mono">0</span></button>
+              <button onclick="selectCategory('verval')" data-category="verval" class="category-tab inline-flex lg:flex items-center justify-between w-auto lg:w-full px-4 py-2.5 text-xs font-bold rounded-xl bg-slate-100 text-slate-600 dark:bg-slate-800 dark:text-slate-400 hover:bg-slate-200"><span>Sistem Verval</span> <span id="badge-verval" class="ml-1.5 bg-slate-200 dark:bg-slate-700 px-1.5 py-0.5 rounded text-[10px] font-mono">0</span></button>
+              <button onclick="selectCategory('keuangan')" data-category="keuangan" class="category-tab inline-flex lg:flex items-center justify-between w-auto lg:w-full px-4 py-2.5 text-xs font-bold rounded-xl bg-slate-100 text-slate-600 dark:bg-slate-800 dark:text-slate-400 hover:bg-slate-200"><span>Keuangan BOSP</span> <span id="badge-keuangan" class="ml-1.5 bg-slate-200 dark:bg-slate-700 px-1.5 py-0.5 rounded text-[10px] font-mono">0</span></button>
+              <button onclick="selectCategory('guru')" data-category="guru" class="category-tab inline-flex lg:flex items-center justify-between w-auto lg:w-full px-4 py-2.5 text-xs font-bold rounded-xl bg-slate-100 text-slate-600 dark:bg-slate-800 dark:text-slate-400 hover:bg-slate-200"><span>Pendidik (GTK)</span> <span id="badge-guru" class="ml-1.5 bg-slate-200 dark:bg-slate-700 px-1.5 py-0.5 rounded text-[10px] font-mono">0</span></button>
+              <button onclick="selectCategory('kepegawaian')" data-category="kepegawaian" class="category-tab inline-flex lg:flex items-center justify-between w-auto lg:w-full px-4 py-2.5 text-xs font-bold rounded-xl bg-slate-100 text-slate-600 dark:bg-slate-800 dark:text-slate-400 hover:bg-slate-200"><span>Kepegawaian ASN</span> <span id="badge-kepegawaian" class="ml-1.5 bg-slate-200 dark:bg-slate-700 px-1.5 py-0.5 rounded text-[10px] font-mono">0</span></button>
+              <button onclick="selectCategory('2fa_auth')" data-category="2fa_auth" class="category-tab inline-flex lg:flex items-center justify-between w-auto lg:w-full px-4 py-2.5 text-xs font-bold rounded-xl bg-slate-100 text-slate-600 dark:bg-slate-800 dark:text-slate-400 hover:bg-slate-200"><span class="flex items-center gap-1"><i class="fa-solid fa-shield-halved text-blue-500"></i> Kunci Keamanan</span> <span id="badge-2fa_auth" class="ml-1.5 bg-slate-200 dark:bg-slate-700 px-1.5 py-0.5 rounded text-[10px] font-mono">0</span></button>
+              <button onclick="selectCategory('ujian')" data-category="ujian" class="category-tab inline-flex lg:flex items-center justify-between w-auto lg:w-full px-4 py-2.5 text-xs font-bold rounded-xl bg-slate-100 text-slate-600 dark:bg-slate-800 dark:text-slate-400 hover:bg-slate-200"><span>Ujian ANBK</span> <span id="badge-ujian" class="ml-1.5 bg-slate-200 dark:bg-slate-700 px-1.5 py-0.5 rounded text-[10px] font-mono">0</span></button>
               <button onclick="selectCategory('daerah')" data-category="daerah" class="category-tab inline-flex lg:flex items-center justify-between w-auto lg:w-full px-4 py-2.5 text-xs font-bold rounded-xl bg-slate-100 text-slate-600 dark:bg-slate-800 dark:text-slate-400 hover:bg-slate-200"><span>Portal Daerah</span> <span id="badge-daerah" class="ml-1.5 bg-slate-200 dark:bg-slate-700 px-1.5 py-0.5 rounded text-[10px] font-mono">0</span></button>
             </nav>
           </div>
         </aside>
 
         <!-- KOLOM TENGAH: SEARCH & LINKS -->
-        <section aria-label="Area Konten Tautan dan 2FA" class="lg:col-span-7 space-y-6">
+        <section class="lg:col-span-7 space-y-6">
           
           <!-- SEARCH BAR -->
           <div class="bg-white dark:bg-slate-800 p-4 sm:p-5 rounded-3xl border border-slate-200/60 dark:border-slate-700/60 shadow-md">
             <div class="relative w-full">
               <span class="absolute inset-y-0 left-0 flex items-center pl-4 text-slate-400"><i class="fa-solid fa-magnifying-glass"></i></span>
-              <input type="text" id="search-input" oninput="filterLinksOrKeys()" placeholder="Cari tautan situs atau nama akun 2FA..." class="block w-full pl-11 pr-12 py-3 text-xs sm:text-sm bg-slate-50 dark:bg-slate-900 border border-slate-200 dark:border-slate-700 rounded-2xl focus:outline-none focus:ring-2 focus:ring-blue-500 dark:text-white" />
+              <input type="text" id="search-input" oninput="filterLinksOrKeys()" placeholder="Cari nama tautan, kementerian atau kredensial kunci 2FA..." class="block w-full pl-11 pr-12 py-3 text-xs sm:text-sm bg-slate-50 dark:bg-slate-900 border border-slate-200 dark:border-slate-700 rounded-2xl focus:outline-none focus:ring-2 focus:ring-blue-500 dark:text-white" />
               <button id="clear-search" onclick="clearSearchInput()" class="hidden absolute inset-y-0 right-0 flex items-center pr-4 text-slate-400 hover:text-slate-600 transition">
                 <i class="fa-solid fa-circle-xmark text-lg"></i>
               </button>
@@ -169,12 +169,12 @@
               <div class="bg-white dark:bg-slate-800 p-5 sm:p-6 rounded-3xl border border-slate-200/60 dark:border-slate-700/60 shadow-md space-y-4">
                 <header class="flex justify-between items-center pb-3 border-b border-slate-100 dark:border-slate-700">
                   <h3 class="font-space font-extrabold text-base text-slate-900 dark:text-white flex items-center gap-2">
-                    <i class="fa-solid fa-key text-blue-500 animate-pulse"></i> Token OTP Aktif
+                    <i class="fa-solid fa-key text-blue-500 animate-pulse"></i> Kode OTP Aktif (TOTP)
                   </h3>
                   <!-- PROGRESS BAR SISA DETIK OTP -->
                   <div class="flex items-center gap-2 text-[10px] font-bold text-slate-400 dark:text-slate-500">
                     <i class="fa-solid fa-arrows-rotate animate-spin-slow"></i>
-                    <span>Sisa: <span id="otp-timer-text" class="font-mono text-blue-600 dark:text-blue-400 font-black">30</span>s</span>
+                    <span>Sisa Waktu: <span id="otp-timer-text" class="font-mono text-blue-600 dark:text-blue-400 font-black">30</span>d</span>
                     <div class="w-12 h-1.5 bg-slate-100 dark:bg-slate-900 rounded-full overflow-hidden">
                       <div id="otp-progress-bar" class="h-full bg-blue-600 rounded-full transition-all duration-1000" style="width: 100%"></div>
                     </div>
@@ -188,8 +188,8 @@
 
                 <!-- CATATAN KAKI KEAMANAN -->
                 <footer class="pt-3 border-t border-slate-100 dark:border-slate-700/60 flex flex-col sm:flex-row items-center justify-between text-[10px] text-slate-400 dark:text-slate-500 font-medium gap-2">
-                  <span class="flex items-center gap-1"><i class="fa-solid fa-lock text-emerald-500"></i> Seluruh data 2FA dienkripsi secara lokal di browser Anda.</span>
-                  <span class="font-mono text-[9px]">Sistem TOTP RFC 6238 / G-Auth Migration</span>
+                  <span class="flex items-center gap-1"><i class="fa-solid fa-lock text-emerald-500"></i> Seluruh data kunci keamanan dienkripsi secara lokal di peramban Anda.</span>
+                  <span class="font-mono text-[9px]">TOTP RFC 6238 / Migrasi Google-Auth</span>
                 </footer>
               </div>
 
@@ -197,7 +197,7 @@
               <div class="bg-white dark:bg-slate-800 p-5 sm:p-6 rounded-3xl border border-slate-200/60 dark:border-slate-700/60 shadow-md space-y-5">
                 <header class="flex justify-between items-center pb-3 border-b border-slate-100 dark:border-slate-700">
                   <h3 class="font-space font-extrabold text-base text-slate-900 dark:text-white flex items-center gap-2">
-                    <i class="fa-solid fa-qrcode text-emerald-500"></i> Setup & Pindai 2FA
+                    <i class="fa-solid fa-qrcode text-emerald-500"></i> Registrasi & Pindai Kunci 2FA
                   </h3>
                 </header>
 
@@ -206,17 +206,17 @@
                   <div class="space-y-3 bg-slate-50 dark:bg-slate-900 p-4 rounded-2xl border border-slate-200/50 dark:border-slate-800">
                     <div class="flex flex-col gap-2">
                       <h4 class="text-xs font-bold text-slate-800 dark:text-white flex items-center gap-1.5">
-                        <i class="fa-solid fa-camera text-emerald-500"></i> Pindai / Unggah QR Code
+                        <i class="fa-solid fa-camera text-emerald-500"></i> Pindai / Unggah Kode QR
                       </h4>
-                      <p class="text-[9px] text-slate-400 leading-tight">Mendukung QR Code standar & QR Code ekspor massal Google Authenticator.</p>
+                      <p class="text-[9px] text-slate-400 leading-tight">Mendukung format standar OTPAuth dan berkas migrasi Google Authenticator.</p>
                       <div class="grid grid-cols-2 gap-2">
                         <!-- Tombol Scan Kamera -->
                         <button id="btn-toggle-scan" onclick="toggleQrScanner()" class="px-3 py-2.5 bg-emerald-600 hover:bg-emerald-700 text-white text-[11px] font-bold rounded-xl transition flex items-center justify-center gap-1">
-                          <i class="fa-solid fa-camera"></i> <span id="text-btn-scan">Scan Kamera</span>
+                          <i class="fa-solid fa-camera"></i> <span id="text-btn-scan">Pindai Kamera</span>
                         </button>
                         <!-- Tombol Upload Berkas Foto QR -->
                         <button onclick="triggerQrFileInput()" class="px-3 py-2.5 bg-blue-600 hover:bg-blue-700 text-white text-[11px] font-bold rounded-xl transition flex items-center justify-center gap-1" title="Unggah tangkapan layar kode QR Anda">
-                          <i class="fa-solid fa-upload"></i> Unggah Foto
+                          <i class="fa-solid fa-upload"></i> Unggah Gambar
                         </button>
                       </div>
                     </div>
@@ -227,24 +227,24 @@
 
                   <!-- INPUT FORM 2FA BARU -->
                   <div class="p-4 bg-slate-50/50 dark:bg-slate-900/30 rounded-2xl border border-slate-200/40 dark:border-slate-700/50 space-y-3">
-                    <h4 class="text-xs font-black uppercase text-slate-400">Tambah Kunci Manual</h4>
+                    <h4 class="text-xs font-black uppercase text-slate-400">Tambah Kunci Secara Manual</h4>
                     <div class="space-y-3 text-xs">
                       <div class="grid grid-cols-2 gap-2">
                         <div>
-                          <label class="block text-[9px] font-black uppercase text-slate-400 mb-1">Layanan</label>
-                          <input type="text" id="auth-main-label" placeholder="e-Kinerja, MyASN" class="w-full text-xs p-2.5 rounded-xl border dark:bg-slate-800 dark:text-white dark:border-slate-700 bg-white outline-none focus:ring-1 focus:ring-blue-500" />
+                          <label class="block text-[9px] font-black uppercase text-slate-400 mb-1">Nama Layanan</label>
+                          <input type="text" id="auth-main-label" placeholder="Contoh: e-Kinerja, MyASN" class="w-full text-xs p-2.5 rounded-xl border dark:bg-slate-800 dark:text-white dark:border-slate-700 bg-white outline-none focus:ring-1 focus:ring-blue-500" />
                         </div>
                         <div>
-                          <label class="block text-[9px] font-black uppercase text-slate-400 mb-1">User/Email</label>
-                          <input type="text" id="auth-main-user" placeholder="rahmat@gmail.com" class="w-full text-xs p-2.5 rounded-xl border dark:bg-slate-800 dark:text-white dark:border-slate-700 bg-white outline-none focus:ring-1 focus:ring-blue-500" />
+                          <label class="block text-[9px] font-black uppercase text-slate-400 mb-1">Pengguna / Email</label>
+                          <input type="text" id="auth-main-user" placeholder="Nama atau email..." class="w-full text-xs p-2.5 rounded-xl border dark:bg-slate-800 dark:text-white dark:border-slate-700 bg-white outline-none focus:ring-1 focus:ring-blue-500" />
                         </div>
                       </div>
                       <div>
-                        <label class="block text-[9px] font-black uppercase text-slate-400 mb-1">Kunci Rahasia (Secret Key)</label>
+                        <label class="block text-[9px] font-black uppercase text-slate-400 mb-1">Kunci Rahasia (Base32)</label>
                         <input type="text" id="auth-main-key" placeholder="Contoh: JBSWY 3DPEH PK3P XP" class="w-full text-xs p-2.5 rounded-xl border dark:bg-slate-800 dark:text-white dark:border-slate-700 bg-white font-mono outline-none focus:ring-1 focus:ring-blue-500" />
                       </div>
                       <button onclick="save2FaKeyFromMain()" class="w-full py-2.5 bg-blue-600 hover:bg-blue-700 text-white text-xs font-extrabold rounded-xl transition shadow-md shadow-blue-500/10 flex items-center justify-center gap-1.5">
-                        <i class="fa-solid fa-save"></i> Simpan Kunci Baru
+                        <i class="fa-solid fa-save"></i> Simpan Kunci Keamanan
                       </button>
                     </div>
                   </div>
@@ -261,13 +261,13 @@
 
           <div id="no-results-message" class="hidden text-center py-12 bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-3xl p-8">
             <div class="text-slate-300 text-5xl mb-4"><i class="fa-solid fa-circle-exclamation"></i></div>
-            <h4 class="text-lg font-bold dark:text-white">Tautan / Akun Tidak Ditemukan</h4>
-            <p class="text-sm text-slate-500 mt-1 max-w-sm mx-auto">Kami tidak dapat menemukan tautan situs atau akun OTP yang sesuai dengan pencarian Anda.</p>
+            <h4 class="text-lg font-bold dark:text-white">Tautan / Kunci Tidak Ditemukan</h4>
+            <p class="text-sm text-slate-500 mt-1 max-w-sm mx-auto">Kami tidak dapat menemukan tautan situs atau kredensial yang sesuai dengan kata kunci pencarian Anda.</p>
           </div>
         </section>
 
         <!-- KOLOM KANAN: ASISTEN OPERATOR -->
-        <aside aria-label="Widget dan Asisten" class="lg:col-span-3 lg:sticky lg:top-20 h-fit space-y-6">
+        <aside class="lg:col-span-3 lg:sticky lg:top-20 h-fit space-y-6">
           
           <!-- WIDGET BATAS CUT-OFF DAPODIK -->
           <div class="bg-white dark:bg-slate-800 rounded-3xl p-5 border border-slate-200/60 dark:border-slate-700/60 shadow-md relative overflow-hidden">
@@ -276,15 +276,15 @@
             </div>
             <div class="relative z-10 space-y-4">
               <header>
-                <span class="text-[9px] font-black tracking-widest bg-blue-50 dark:bg-slate-900 text-blue-600 dark:text-blue-400 px-2.5 py-1 rounded-full uppercase">BATAS SINKRONISASI</span>
+                <span class="text-[9px] font-black tracking-widest bg-blue-50 dark:bg-slate-900 text-blue-600 dark:text-blue-400 px-2.5 py-1 rounded-full uppercase">PENGHITUNG MUNDUR SINKRONISASI</span>
                 <h3 id="view-cutoff-title" class="font-space font-extrabold text-base tracking-wide flex items-center gap-2 mt-3 mb-1 text-rose-600 dark:text-rose-400">
-                  <i class="fa-solid fa-clock-rotate-left animate-pulse"></i> Memuat Judul...
+                  <i class="fa-solid fa-clock-rotate-left animate-pulse"></i> Memuat Judul Batas Waktu...
                 </h3>
-                <p id="view-cutoff-desc" class="text-[11px] text-slate-500 dark:text-slate-400 font-medium">Memuat keterangan batas waktu penarikan...</p>
+                <p id="view-cutoff-desc" class="text-[11px] text-slate-500 dark:text-slate-400 font-medium">Memuat rincian target penarikan data...</p>
               </header>
               
               <!-- Real-time Countdown Grid -->
-              <div class="grid grid-cols-4 gap-2 text-center">
+              <div class="grid grid-cols-4 gap-2 text-center font-mono">
                 <div class="bg-slate-50 dark:bg-slate-900 border border-slate-200/50 dark:border-slate-700/50 rounded-xl p-2">
                   <span id="countdown-days" class="block font-space font-black text-xl leading-tight">--</span>
                   <span class="text-[8px] uppercase tracking-wider font-extrabold text-slate-400">Hari</span>
@@ -305,7 +305,7 @@
 
               <!-- NOTIFIKASI TUGAS AKTIF SINKRONISASI -->
               <div id="countdown-active-task-box" class="pt-3.5 border-t border-slate-100 dark:border-slate-700/60 space-y-2">
-                <span class="text-[9px] font-black tracking-widest text-blue-600 dark:text-blue-400 uppercase block">🎯 Fokus Utama Saat Ini</span>
+                <span class="text-[9px] font-black tracking-widest text-blue-600 dark:text-blue-400 uppercase block">🎯 Prioritas Kerja Utama</span>
                 <div class="p-3 bg-slate-50 dark:bg-slate-900 rounded-2xl border border-slate-100 dark:border-slate-800 flex items-start justify-between gap-3 shadow-xs">
                   <span id="countdown-active-task-text" class="text-[11px] font-medium leading-relaxed text-slate-600 dark:text-slate-300 break-words flex-1">Memuat tugas aktif...</span>
                   <button id="countdown-active-task-btn" class="text-blue-600 hover:text-emerald-500 font-bold text-xs flex-shrink-0 transition-colors hidden" title="Tandai Selesai">
@@ -317,19 +317,19 @@
               <footer class="flex items-center justify-between pt-2 text-[10px] text-slate-500 dark:text-slate-400 font-bold">
                 <span id="view-cutoff-footer-target">Target: -</span>
                 <span class="flex items-center gap-1">
-                  <span class="w-1.5 h-1.5 rounded-full bg-rose-500 animate-ping"></span> Live Countdown
+                  <span class="w-1.5 h-1.5 rounded-full bg-rose-500 animate-ping"></span> Perhitungan Waktu Nyata
                 </span>
               </footer>
             </div>
           </div>
 
           <!-- PANEL TAB ASISTEN OPERATOR -->
-          <div class="bg-white dark:bg-slate-800 rounded-3xl border border-slate-200/60 dark:border-slate-700/60 shadow-md overflow-hidden">
+          <div class="bg-white dark:bg-slate-800 rounded-3xl border border-slate-200/60 dark:border-slate-700/60 shadow-md overflow-hidden font-sans">
             <!-- Header Tab Global -->
             <nav class="flex border-b border-slate-100 dark:border-slate-700 bg-slate-50 dark:bg-slate-900/60 p-1.5 gap-1" aria-label="Tab Asisten">
-              <button id="btn-tab-agenda" onclick="switchAsistenTab('agenda')" class="flex-1 py-2 px-2 rounded-xl text-[11px] font-extrabold transition-all flex items-center justify-center gap-1.5 bg-white dark:bg-slate-800 text-blue-600 shadow-sm"><i class="fa-solid fa-clipboard-list"></i> Agenda</button>
-              <button id="btn-tab-kalender" onclick="switchAsistenTab('kalender')" class="flex-1 py-2 px-2 rounded-xl text-[11px] font-bold transition-all flex items-center justify-center gap-1.5 text-slate-500 hover:text-slate-800"><i class="fa-solid fa-calendar-days"></i> Jadwal</button>
-              <button id="btn-tab-alat" onclick="switchAsistenTab('alat')" class="flex-1 py-2 px-2 rounded-xl text-[11px] font-bold transition-all flex items-center justify-center gap-1.5 text-slate-500 hover:text-slate-800"><i class="fa-solid fa-screwdriver-wrench"></i> Alat IT</button>
+              <button id="btn-tab-agenda" onclick="switchAsistenTab('agenda')" class="flex-1 py-2 px-2 rounded-xl text-[11px] font-extrabold transition-all flex items-center justify-center gap-1.5 bg-white dark:bg-slate-800 text-blue-600 shadow-sm"><i class="fa-solid fa-clipboard-list"></i> Agenda Kerja</button>
+              <button id="btn-tab-kalender" onclick="switchAsistenTab('kalender')" class="flex-1 py-2 px-2 rounded-xl text-[11px] font-bold transition-all flex items-center justify-center gap-1.5 text-slate-500 hover:text-slate-800"><i class="fa-solid fa-calendar-days"></i> Kalender Jadwal</button>
+              <button id="btn-tab-alat" onclick="switchAsistenTab('alat')" class="flex-1 py-2 px-2 rounded-xl text-[11px] font-bold transition-all flex items-center justify-center gap-1.5 text-slate-500 hover:text-slate-800"><i class="fa-solid fa-screwdriver-wrench"></i> Peralatan IT</button>
             </nav>
 
             <!-- ISI PANEL -->
@@ -340,14 +340,14 @@
                 <!-- Switcher Internal -->
                 <div class="flex p-1 bg-slate-100 dark:bg-slate-900 rounded-xl gap-1">
                   <button id="btn-sub-tugas" onclick="switchSubTab('tugas')" class="flex-1 py-1.5 text-[10px] font-black bg-white dark:bg-slate-800 text-blue-600 shadow-xs rounded-lg">DAFTAR TUGAS</button>
-                  <button id="btn-sub-memo" onclick="switchSubTab('memo')" class="flex-1 py-1.5 text-[10px] font-bold rounded-lg transition-all text-slate-500">BUKU SAKU (MEMO)</button>
+                  <button id="btn-sub-memo" onclick="switchSubTab('memo')" class="flex-1 py-1.5 text-[10px] font-bold rounded-lg transition-all text-slate-500">BUKU SAKU (CATATAN)</button>
                 </div>
 
                 <!-- Konten Sub-Tab 1: Tugas Pekerjaan -->
                 <div id="sub-panel-tugas" class="sub-tab-content space-y-4">
                   <header class="flex justify-between items-center">
-                    <h4 class="font-bold text-xs flex items-center gap-1.5"><i class="fa-solid fa-list-check text-blue-500"></i> Agenda Kerja</h4>
-                    <select id="agenda-filter" onchange="renderAgenda()" class="text-[9px] bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-700 rounded p-1 font-bold outline-none"><option value="semua">Semua</option><option value="belum">Belum</option><option value="selesai">Selesai</option></select>
+                    <h4 class="font-bold text-xs flex items-center gap-1.5"><i class="fa-solid fa-list-check text-blue-500"></i> Tugas Terjadwal</h4>
+                    <select id="agenda-filter" onchange="renderAgenda()" class="text-[9px] bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-700 rounded p-1 font-bold outline-none cursor-pointer"><option value="semua">Semua</option><option value="belum">Belum</option><option value="selesai">Selesai</option></select>
                   </header>
                   <div class="custom-scroll space-y-2.5" id="agenda-list-container"></div>
                   <button onclick="openAddAgendaModal()" class="w-full py-2.5 bg-blue-600 hover:bg-blue-700 text-white rounded-xl text-[11px] font-bold transition flex items-center justify-center gap-2"><i class="fa-solid fa-plus-circle"></i> Tambah Tugas Baru</button>
@@ -356,11 +356,11 @@
                 <!-- Konten Sub-Tab 2: Buku Saku / Memo -->
                 <div id="sub-panel-memo" class="sub-tab-content hidden space-y-4">
                   <header class="flex justify-between items-center">
-                    <h4 class="font-bold text-xs flex items-center gap-1.5"><i class="fa-solid fa-sticky-note text-amber-500"></i> Catatan Cepat (Buku Saku)</h4>
+                    <h4 class="font-bold text-xs flex items-center gap-1.5"><i class="fa-solid fa-sticky-note text-amber-500"></i> Catatan Cepat Mandiri</h4>
                   </header>
                   <div id="quick-notes-list" class="custom-scroll space-y-2.5"></div>
                   <button onclick="openAddMemoModal()" class="w-full py-2.5 bg-blue-600 hover:bg-blue-700 text-white rounded-xl text-[11px] font-bold transition flex items-center justify-center gap-2">
-                    <i class="fa-solid fa-plus-circle"></i> Tambah Memo Baru
+                    <i class="fa-solid fa-plus-circle"></i> Tambah Catatan Baru
                   </button>
                 </div>
               </div>
@@ -368,7 +368,7 @@
               <!-- PANEL KALENDER -->
               <div id="panel-tab-kalender" class="hidden space-y-4">
                 <header class="flex items-center justify-between">
-                  <span class="text-xs font-bold flex items-center gap-1.5"><i class="fa-solid fa-calendar-check text-blue-500"></i> Kalender Kerja</span>
+                  <span class="text-xs font-bold flex items-center gap-1.5"><i class="fa-solid fa-calendar-check text-blue-500"></i> Penanda Hari Kerja</span>
                   <div class="flex items-center space-x-1">
                     <button onclick="prevMonth()" class="w-6 h-6 flex items-center justify-center rounded bg-slate-100 dark:bg-slate-900 text-[10px] transition"><i class="fa-solid fa-chevron-left"></i></button>
                     <button onclick="nextMonth()" class="w-6 h-6 flex items-center justify-center rounded bg-slate-100 dark:bg-slate-900 text-[10px] transition"><i class="fa-solid fa-chevron-right"></i></button>
@@ -380,27 +380,30 @@
                 </div>
                 <div class="grid grid-cols-7 gap-1 text-center text-xs font-semibold" id="calendar-days-grid"></div>
                 <footer id="calendar-event-display" class="pt-3 border-t border-slate-100 dark:border-slate-700">
-                   <p class="text-[10px] text-slate-400 italic"><i class="fa-solid fa-info-circle text-blue-400"></i> Ketuk tanggal untuk jadwal.</p>
+                   <p class="text-[10px] text-slate-400 italic"><i class="fa-solid fa-info-circle text-blue-400"></i> Klik pada tanggal untuk menandai jadwal.</p>
                 </footer>
               </div>
 
               <!-- PANEL ALAT IT -->
               <div id="panel-tab-alat" class="hidden space-y-4">
+                <!-- WhatsApp Broadcast -->
                 <div class="bg-slate-50 dark:bg-slate-900/30 p-3 rounded-2xl border border-slate-200/50 space-y-2.5">
-                   <div class="flex justify-between items-center"><h5 class="text-[11px] font-bold flex items-center gap-1.5"><i class="fa-brands fa-whatsapp text-emerald-500"></i> Broadcast WA</h5><button onclick="openTemplatesModal()" class="text-[9px] text-blue-600 hover:underline font-bold">KELOLA</button></div>
-                   <input type="text" id="wa-recipient-name" placeholder="Nama Guru" class="w-full text-[10px] p-2 rounded-xl border bg-white dark:bg-slate-900 dark:text-white dark:border-slate-700 outline-none focus:ring-1 focus:ring-blue-500" />
+                   <div class="flex justify-between items-center"><h5 class="text-[11px] font-bold flex items-center gap-1.5"><i class="fa-brands fa-whatsapp text-emerald-500"></i> Siaran WhatsApp</h5><button onclick="openTemplatesModal()" class="text-[9px] text-blue-600 hover:underline font-bold">KELOLA</button></div>
+                   <input type="text" id="wa-recipient-name" placeholder="Nama Lengkap Pendidik" class="w-full text-[10px] p-2 rounded-xl border bg-white dark:bg-slate-900 dark:text-white dark:border-slate-700 outline-none focus:ring-1 focus:ring-blue-500" />
                    <select id="wa-template-select" class="w-full text-[10px] p-2 rounded-xl border bg-white dark:bg-slate-900 dark:text-white dark:border-slate-700 outline-none font-bold cursor-pointer focus:ring-1 focus:ring-blue-500"></select>
-                   <div class="flex gap-2"><button onclick="copyBroadcastMessage()" class="flex-1 py-1.5 bg-slate-100 dark:bg-slate-700 text-slate-700 dark:text-slate-200 border rounded-xl text-[10px] font-bold"><i class="fa-solid fa-copy"></i> Salin</button><button onclick="sendBroadcastWhatsApp()" class="flex-1 py-1.5 bg-emerald-600 text-white rounded-xl text-[10px] font-bold"><i class="fa-brands fa-whatsapp"></i> Kirim</button></div>
+                   <div class="flex gap-2"><button onclick="copyBroadcastMessage()" class="flex-1 py-1.5 bg-slate-100 dark:bg-slate-700 text-slate-700 dark:text-slate-200 border rounded-xl text-[10px] font-bold"><i class="fa-solid fa-copy"></i> Salin Pesan</button><button onclick="sendBroadcastWhatsApp()" class="flex-1 py-1.5 bg-emerald-600 text-white rounded-xl text-[10px] font-bold"><i class="fa-brands fa-whatsapp"></i> Kirim WhatsApp</button></div>
                 </div>
                 
+                <!-- Password Generator -->
                 <div class="bg-slate-50 dark:bg-slate-900/30 p-3 rounded-2xl border border-slate-200/50 space-y-2.5">
-                   <h5 class="text-[11px] font-bold flex items-center gap-1.5"><i class="fa-solid fa-key text-amber-500"></i> Password Generator</h5>
-                   <div class="flex gap-2"><input type="text" id="generated-password-input" readonly placeholder="Sandi..." onclick="copyGeneratedPassword()" class="flex-1 text-[10px] p-2 rounded-xl border dark:bg-slate-800 dark:text-white dark:border-slate-700 font-mono cursor-pointer outline-none" /><button onclick="generateSecurePassword()" class="bg-amber-500 hover:bg-amber-600 text-white text-[10px] px-3 font-bold rounded-xl transition"><i class="fa-solid fa-rotate"></i></button></div>
+                   <h5 class="text-[11px] font-bold flex items-center gap-1.5"><i class="fa-solid fa-key text-amber-500"></i> Pembuat Kata Sandi Aman</h5>
+                   <div class="flex gap-2"><input type="text" id="generated-password-input" readonly placeholder="Klik acak..." onclick="copyGeneratedPassword()" class="flex-1 text-[10px] p-2 rounded-xl border dark:bg-slate-800 dark:text-white dark:border-slate-700 font-mono cursor-pointer outline-none" /><button onclick="generateSecurePassword()" class="bg-amber-500 hover:bg-amber-600 text-white text-[10px] px-3 font-bold rounded-xl transition"><i class="fa-solid fa-rotate"></i></button></div>
                 </div>
 
+                <!-- PWA Deployment -->
                 <div class="bg-blue-50/70 dark:bg-blue-950/20 p-3 rounded-2xl border border-blue-200/50 dark:border-blue-800/40 space-y-2.5">
                   <h5 class="text-[11px] font-black text-blue-700 dark:text-blue-400 flex items-center gap-1.5">
-                    <i class="fa-solid fa-circle-nodes text-blue-500"></i> PWA Offline Deployment Kit
+                    <i class="fa-solid fa-circle-nodes text-blue-500"></i> Paket Pemasangan Luring PWA
                   </h5>
                   <p class="text-[9px] text-slate-500 dark:text-slate-400 leading-relaxed">
                     Unduh konfigurasi berikut dan letakkan di dalam folder root bersama file <code class="font-mono bg-slate-100 dark:bg-slate-800 px-1 py-0.5 rounded text-blue-600">index.html</code> Anda agar portal dapat diakses tanpa koneksi internet.
@@ -410,12 +413,12 @@
                       <i class="fa-solid fa-file-code"></i> Unduh Manifest
                     </button>
                     <button onclick="downloadPwaFile('sw')" class="py-1.5 bg-indigo-600 hover:bg-indigo-700 text-white rounded-xl text-[10px] font-bold transition flex items-center justify-center gap-1">
-                      <i class="fa-solid fa-gears"></i> Unduh sw.js
+                      <i class="fa-solid fa-gears"></i> Unduh Service Worker
                     </button>
                   </div>
                   <div class="text-[9px] text-center pt-1 flex items-center justify-center gap-1 text-slate-400 dark:text-slate-500 font-medium">
                     <span id="pwa-sw-status-dot" class="w-1.5 h-1.5 rounded-full bg-slate-400 animate-pulse"></span>
-                    <span>Status Service Worker: <span id="pwa-sw-status-text" class="font-semibold">Mendeteksi...</span></span>
+                    <span>Status Layanan Luring: <span id="pwa-sw-status-text" class="font-semibold">Mendeteksi...</span></span>
                   </div>
                 </div>
               </div>
@@ -426,13 +429,9 @@
       </div>
     </main>
 
-    <!-- =========================================================================
-         KUMPULAN MODAL & INPUT TERSEMBUNYI
-         ========================================================================= -->
+    <!-- KUMPULAN MODAL & INPUT TERSEMBUNYI -->
     <div id="hidden-inputs-wrapper" class="hidden">
-      <!-- Input file Data JSON untuk Import -->
       <input type="file" id="import-file-input" accept=".json" onchange="importBackupData(event)"/>
-      <!-- Input file Gambar QR Code -->
       <input type="file" id="qr-file-input" accept="image/*" onchange="scanQrFile(event)" />
     </div>
 
@@ -447,7 +446,7 @@
           <p class="text-xs text-slate-400 leading-relaxed">Portal dikunci sementara demi keamanan data karena sistem tidak mendeteksi aktivitas Anda selama beberapa waktu.</p>
         </div>
         <button onclick="unlockSession()" class="w-full py-3 bg-blue-600 hover:bg-blue-700 text-white font-bold rounded-xl text-xs transition duration-200 shadow-lg shadow-blue-500/20">
-          <i class="fa-solid fa-lock-open mr-1.5"></i> Buka Sesi
+          <i class="fa-solid fa-lock-open mr-1.5"></i> Pulihkan Sesi
         </button>
       </div>
     </div>
@@ -472,25 +471,25 @@
     </div>
 
     <!-- MODAL TAMBAH TAUTAN -->
-    <div id="add-link-modal" class="fixed inset-0 z-50 flex items-center justify-center bg-slate-900/60 backdrop-blur-sm opacity-0 pointer-events-none transition-all duration-300">
-      <div class="bg-white dark:bg-slate-800 w-full max-w-md mx-4 p-6 rounded-3xl border shadow-2xl relative transform scale-95 transition-all duration-300 font-sans">
-        <h3 class="font-space font-bold text-slate-900 dark:text-white text-base mb-4"><i class="fa-solid fa-circle-plus text-emerald-500"></i> Tambah Tautan</h3>
+    <div id="add-link-modal" class="fixed inset-0 z-50 flex items-center justify-center bg-slate-900/60 backdrop-blur-sm opacity-0 pointer-events-none transition-all duration-300 font-sans">
+      <div class="bg-white dark:bg-slate-800 w-full max-w-md mx-4 p-6 rounded-3xl border shadow-2xl relative transform scale-95 transition-all duration-300">
+        <h3 class="font-space font-bold text-slate-900 dark:text-white text-base mb-4"><i class="fa-solid fa-circle-plus text-emerald-500"></i> Tambah Tautan Kustom</h3>
         <div class="space-y-4">
           <input type="text" id="new-link-title" placeholder="Nama Tautan" class="w-full text-sm p-3 rounded-xl border bg-slate-50 dark:bg-slate-900 dark:text-white dark:border-slate-700 outline-none focus:ring-2 focus:ring-blue-500" />
           <input type="url" id="new-link-url" placeholder="https://..." class="w-full text-sm p-3 rounded-xl border bg-slate-50 dark:bg-slate-900 dark:text-white dark:border-slate-700 outline-none focus:ring-2 focus:ring-blue-500" />
-          <textarea id="new-link-desc" rows="2" placeholder="Deskripsi Singkat" class="w-full text-sm p-3 rounded-xl border bg-slate-50 dark:bg-slate-900 dark:text-white dark:border-slate-700 outline-none focus:ring-2 focus:ring-blue-500"></textarea>
+          <textarea id="new-link-desc" rows="2" placeholder="Deskripsi Singkat Layanan" class="w-full text-sm p-3 rounded-xl border bg-slate-50 dark:bg-slate-900 dark:text-white dark:border-slate-700 outline-none focus:ring-2 focus:ring-blue-500"></textarea>
           <div class="grid grid-cols-2 gap-3">
-            <select id="new-link-category" class="w-full text-sm p-3 rounded-xl border bg-slate-50 dark:bg-slate-900 dark:text-white dark:border-slate-700 outline-none font-bold focus:ring-2 focus:ring-blue-500">
+            <select id="new-link-category" class="w-full text-sm p-3 rounded-xl border bg-slate-50 dark:bg-slate-900 dark:text-white dark:border-slate-700 outline-none font-bold focus:ring-2 focus:ring-blue-500 cursor-pointer">
               <option value="utama">Dapodik Utama</option><option value="verval">Sistem Verval</option><option value="keuangan">Keuangan</option><option value="guru">Layanan GTK</option><option value="kepegawaian">ASN</option><option value="daerah">Portal Daerah</option>
             </select>
-            <select id="new-link-icon" class="w-full text-sm p-3 rounded-xl border bg-slate-50 dark:bg-slate-900 dark:text-white dark:border-slate-700 outline-none font-bold focus:ring-2 focus:ring-blue-500">
-              <option value="fa-globe">Globe</option><option value="fa-database">Database</option><option value="fa-id-card">Kartu</option><option value="fa-computer">Komputer</option><option value="fa-wallet">Dompet</option>
+            <select id="new-link-icon" class="w-full text-sm p-3 rounded-xl border bg-slate-50 dark:bg-slate-900 dark:text-white dark:border-slate-700 outline-none font-bold focus:ring-2 focus:ring-blue-500 cursor-pointer">
+              <option value="fa-globe">Globe/Web</option><option value="fa-database">Database</option><option value="fa-id-card">Kartu Identitas</option><option value="fa-computer">Komputer</option><option value="fa-wallet">Keuangan</option>
             </select>
           </div>
         </div>
         <div class="mt-6 flex justify-end gap-2.5">
           <button onclick="closeAddLinkModal()" class="px-4 py-2 text-xs font-bold text-slate-500">Batal</button>
-          <button onclick="saveCustomLinkLocal()" class="px-5 py-2 rounded-xl bg-blue-600 hover:bg-blue-700 text-white text-xs font-bold transition">Simpan</button>
+          <button onclick="saveCustomLinkLocal()" class="px-5 py-2 rounded-xl bg-blue-600 hover:bg-blue-700 text-white text-xs font-bold transition">Simpan Tautan</button>
         </div>
       </div>
     </div>
@@ -499,10 +498,10 @@
     <div id="add-agenda-modal" class="fixed inset-0 z-50 flex items-center justify-center bg-slate-900/60 backdrop-blur-sm opacity-0 pointer-events-none transition-all duration-300 font-sans">
       <div class="bg-white dark:bg-slate-800 w-full max-w-md mx-4 p-6 rounded-3xl border shadow-2xl relative transform scale-95 transition-all duration-300">
         <h3 class="font-space font-bold text-slate-900 dark:text-white text-base mb-4"><i class="fa-solid fa-list-check text-blue-500"></i> Buat Agenda Baru</h3>
-        <textarea id="agenda-input-text" rows="4" placeholder="Tuliskan tugas yang harus segera diselesaikan..." class="w-full text-sm p-4 rounded-2xl border bg-slate-50 dark:bg-slate-900 dark:text-white dark:border-slate-700 focus:ring-2 focus:ring-blue-500 outline-none"></textarea>
+        <textarea id="agenda-input-text" rows="4" placeholder="Tuliskan draf tugas administrasi sekolah yang harus segera diselesaikan..." class="w-full text-sm p-4 rounded-2xl border bg-slate-50 dark:bg-slate-900 dark:text-white dark:border-slate-700 focus:ring-2 focus:ring-blue-500 outline-none"></textarea>
         <div class="mt-6 flex justify-end gap-2.5">
           <button onclick="closeAddAgendaModal()" class="px-4 py-2 text-xs font-bold text-slate-500">Batal</button>
-          <button onclick="addAgendaItem()" class="px-6 py-2 rounded-xl bg-blue-600 hover:bg-blue-700 text-white text-xs font-black transition">SIMPAN TUGAS</button>
+          <button onclick="addAgendaItem()" class="px-6 py-2 rounded-xl bg-blue-600 hover:bg-blue-700 text-white text-xs font-black transition">Simpan Agenda</button>
         </div>
       </div>
     </div>
@@ -512,7 +511,7 @@
       <div class="bg-white dark:bg-slate-800 w-full max-w-md mx-4 p-5 sm:p-6 rounded-3xl border shadow-2xl relative transform scale-95 transition-all duration-300">
         <div class="flex justify-between items-center pb-4 mb-4 border-b border-slate-100 dark:border-slate-700">
           <h3 class="font-space font-bold text-slate-900 dark:text-white text-base flex items-center gap-2">
-            <i class="fa-solid fa-sticky-note text-amber-500"></i> Tambah Memo Baru
+            <i class="fa-solid fa-sticky-note text-amber-500"></i> Tambah Memo Catatan Baru
           </h3>
           <button onclick="closeAddMemoModal()" class="text-slate-400 hover:text-slate-600 dark:hover:text-slate-200">
             <i class="fa-solid fa-xmark text-lg"></i>
@@ -522,21 +521,21 @@
           <div class="grid grid-cols-2 gap-3">
             <div>
               <label class="block text-xs font-bold uppercase text-slate-400 mb-1.5">Judul Catatan</label>
-              <input type="text" id="note-title-input" placeholder="Judul..." class="w-full text-xs p-3 rounded-xl border bg-slate-50 dark:bg-slate-900 dark:text-white dark:border-slate-700 focus:ring-1 focus:ring-blue-500 outline-none" />
+              <input type="text" id="note-title-input" placeholder="Judul memo..." class="w-full text-xs p-3 rounded-xl border bg-slate-50 dark:bg-slate-900 dark:text-white dark:border-slate-700 focus:ring-1 focus:ring-blue-500 outline-none" />
             </div>
             <div>
-              <label class="block text-xs font-bold uppercase text-slate-400 mb-1.5">Tanggal (Opsional)</label>
-              <input type="date" id="note-date-input" class="w-full text-xs p-3 rounded-xl border bg-slate-50 dark:bg-slate-900 dark:text-white dark:border-slate-700 font-mono focus:ring-1 focus:ring-blue-500 outline-none" />
+              <label class="block text-xs font-bold uppercase text-slate-400 mb-1.5">Tanggal Pelaksanaan</label>
+              <input type="date" id="note-date-input" class="w-full text-xs p-3 rounded-xl border bg-slate-50 dark:bg-slate-900 dark:text-white dark:border-slate-700 font-mono focus:ring-1 focus:ring-blue-500 outline-none cursor-pointer" />
             </div>
           </div>
           <div>
-            <label class="block text-xs font-bold uppercase text-slate-400 mb-1.5">Isi Memo / Catatan</label>
-            <textarea id="note-body-input" rows="4" placeholder="Tulis catatan penting di sini..." class="w-full text-xs p-3 rounded-xl border bg-slate-50 dark:bg-slate-900 dark:text-white dark:border-slate-700 focus:ring-1 focus:ring-blue-500 outline-none"></textarea>
+            <label class="block text-xs font-bold uppercase text-slate-400 mb-1.5">Rincian Informasi Memo</label>
+            <textarea id="note-body-input" rows="4" placeholder="Tulis catatan penting sekolah di sini..." class="w-full text-xs p-3 rounded-xl border bg-slate-50 dark:bg-slate-900 dark:text-white dark:border-slate-700 focus:ring-1 focus:ring-blue-500 outline-none"></textarea>
           </div>
         </div>
         <div class="mt-6 pt-4 border-t border-slate-100 dark:border-slate-700 flex justify-end gap-2.5">
           <button onclick="closeAddMemoModal()" class="px-4 py-2.5 rounded-xl border border-slate-200/60 dark:border-slate-700 text-xs font-bold text-slate-500">Batal</button>
-          <button onclick="addQuickNote()" class="px-5 py-2.5 rounded-xl bg-blue-600 hover:bg-blue-700 text-white text-xs font-bold transition shadow-lg shadow-blue-500/10">Simpan Memo</button>
+          <button onclick="addQuickNote()" class="px-5 py-2.5 rounded-xl bg-blue-600 hover:bg-blue-700 text-white text-xs font-bold transition shadow-lg shadow-blue-500/10">Simpan Catatan</button>
         </div>
       </div>
     </div>
@@ -545,35 +544,35 @@
     <div id="templates-modal" class="fixed inset-0 z-50 flex items-center justify-center bg-slate-900/60 backdrop-blur-sm opacity-0 pointer-events-none transition-all duration-300 font-sans">
       <div class="bg-white dark:bg-slate-800 w-full max-w-lg mx-4 p-5 sm:p-6 rounded-3xl border shadow-2xl relative transform scale-95 transition-all duration-300 max-h-[90vh] overflow-y-auto">
         <div class="flex justify-between items-center mb-4 border-b pb-4">
-          <h3 class="font-space font-bold text-slate-900 dark:text-white text-base flex items-center gap-2"><i class="fa-brands fa-whatsapp text-emerald-500 text-xl"></i> Template WA</h3>
+          <h3 class="font-space font-bold text-slate-900 dark:text-white text-base flex items-center gap-2"><i class="fa-brands fa-whatsapp text-emerald-500 text-xl"></i> Pilihan Template WhatsApp</h3>
           <button onclick="closeTemplatesModal()" class="text-slate-400"><i class="fa-solid fa-xmark text-lg"></i></button>
         </div>
         <div id="templates-list-view" class="space-y-4">
           <div id="templates-list-container" class="space-y-2.5 max-h-60 overflow-y-auto pr-1"></div>
-          <button onclick="showAddTemplateForm()" class="w-full py-2 bg-emerald-50 text-emerald-600 border border-emerald-200 text-xs font-bold rounded-xl hover:bg-emerald-100 transition">+ Tambah Template Kustom</button>
+          <button onclick="showAddTemplateForm()" class="w-full py-2 bg-emerald-50 text-emerald-600 border border-emerald-200 text-xs font-bold rounded-xl hover:bg-emerald-100 transition">+ Buat Template Kustom Baru</button>
         </div>
         <div id="template-form-view" class="hidden space-y-4">
           <input type="hidden" id="template-edit-id" />
-          <input type="text" id="template-name-input" placeholder="Judul Template" class="w-full text-xs p-3 rounded-xl border bg-slate-50 dark:bg-slate-900 dark:text-white dark:border-slate-700 outline-none" />
-          <textarea id="template-text-input" rows="5" placeholder="Pesan... gunakan {nama}" class="w-full text-xs p-3 rounded-xl border bg-slate-50 dark:bg-slate-900 dark:text-white dark:border-slate-700 outline-none"></textarea>
-          <div class="flex justify-end gap-2"><button onclick="hideTemplateForm()" class="px-4 py-2 text-xs font-bold text-slate-500">Batal</button><button onclick="saveTemplate()" class="px-5 py-2 rounded-xl bg-blue-600 hover:bg-blue-700 text-white text-xs font-bold transition">Simpan</button></div>
+          <input type="text" id="template-name-input" placeholder="Nama/Judul Template Siaran" class="w-full text-xs p-3 rounded-xl border bg-slate-50 dark:bg-slate-900 dark:text-white dark:border-slate-700 outline-none" />
+          <textarea id="template-text-input" rows="5" placeholder="Tulis naskah pesan siaran... gunakan penanda variabel {nama} untuk nama pendidik." class="w-full text-xs p-3 rounded-xl border bg-slate-50 dark:bg-slate-900 dark:text-white dark:border-slate-700 outline-none"></textarea>
+          <div class="flex justify-end gap-2"><button onclick="hideTemplateForm()" class="px-4 py-2 text-xs font-bold text-slate-500">Batal</button><button onclick="saveTemplate()" class="px-5 py-2 rounded-xl bg-blue-600 hover:bg-blue-700 text-white text-xs font-bold transition">Simpan Template</button></div>
         </div>
-        <div class="mt-6 flex justify-end"><button onclick="closeTemplatesModal()" class="px-5 py-2 bg-slate-100 dark:bg-slate-700 rounded-xl text-xs font-bold hover:bg-slate-200 transition">Tutup</button></div>
+        <div class="mt-6 flex justify-end"><button onclick="closeTemplatesModal()" class="px-5 py-2 bg-slate-100 dark:bg-slate-700 rounded-xl text-xs font-bold hover:bg-slate-200 transition">Tutup Dialog</button></div>
       </div>
     </div>
 
     <!-- TOAST NOTIFICATION -->
     <div id="toast" class="fixed bottom-5 right-5 z-50 transform translate-y-4 opacity-0 pointer-events-none transition-all duration-300 flex items-center gap-2.5 bg-slate-900/95 dark:bg-white text-white dark:text-slate-900 text-xs py-3.5 px-5 rounded-xl shadow-xl border border-slate-800 dark:border-slate-100 font-sans">
       <i id="toast-icon" class="fa-solid fa-circle-check text-emerald-400 dark:text-emerald-600 text-base"></i>
-      <span id="toast-message" class="font-bold">Pesan notifikasi</span>
+      <span id="toast-message" class="font-bold">Notifikasi sistem aktif</span>
     </div>
 
-    <!-- Pemuatan Skrip Modular secara Berurutan -->
+    <!-- Pemuatan Skrip Berurutan (Pencegahan Temporal Dead Zone) -->
+    <script src="js/app.js"></script>
     <script src="js/utils.js"></script>
     <script src="js/storage.js"></script>
     <script src="js/otp.js"></script>
     <script src="js/links.js"></script>
     <script src="js/ui.js"></script>
-    <script src="js/app.js"></script>
   </body>
 </html>
