@@ -2,7 +2,6 @@
 // GOOGLE AUTHENTICATOR MIGRATION & TOTP DECODER ENGINE
 // ==========================================================
 
-// Fungsi konversi biner Base32 ke WordArray CryptoJS
 function base32toWordArray(b32) {
   const cleaned = b32.replace(/[\s\-=]+/g, "").toUpperCase();
   if (!cleaned || cleaned.length === 0) return CryptoJS.lib.WordArray.create([]);
@@ -26,7 +25,6 @@ function base32toWordArray(b32) {
   return CryptoJS.lib.WordArray.create(words, Math.floor(binaryString.length / 8));
 }
 
-// Fungsi utama pembuat token TOTP (RFC 6238)
 function generateTOTP(secretKey) {
   try {
     if (!secretKey) return "000000";
@@ -48,7 +46,6 @@ function generateTOTP(secretKey) {
   }
 }
 
-// Fungsi baca struktur varint biner
 function readVarint(bytes, offset) {
   let value = 0;
   let shift = 0;
@@ -63,7 +60,6 @@ function readVarint(bytes, offset) {
   return { value, offset };
 }
 
-// Pengurai manual Google Protobuf Payload
 function parseProtobuf(bytes) {
   let offset = 0;
   const fields = [];
@@ -103,7 +99,6 @@ function parseProtobuf(bytes) {
   return fields;
 }
 
-// Konversi UInt8Array biner ke Base32 String kustom
 function uint8ArrayToBase32(arr) {
   const alphabet = "ABCDEFGHIJKLMNOPQRSTUVWXYZ234567";
   let bits = 0;
@@ -123,7 +118,6 @@ function uint8ArrayToBase32(arr) {
   return output;
 }
 
-// Mengubah String Base64 URL-Safe aman menjadi normal
 function safeAtob(str) {
   let padded = str.replace(/-/g, '+').replace(/_/g, '/').replace(/\s/g, '');
   while (padded.length % 4 !== 0) {
@@ -132,7 +126,6 @@ function safeAtob(str) {
   return atob(padded);
 }
 
-// Fungsi utama decode QR ekspor massal Google Authenticator
 function parseGoogleMigrationUri(uri) {
   try {
     const urlObj = new URL(uri);
@@ -181,7 +174,6 @@ function parseGoogleMigrationUri(uri) {
   }
 }
 
-// Mengurai tautan URI otpauth:// standar
 function parseOtpAuthUri(uri) {
   try {
     if (!uri.startsWith('otpauth://')) return null;
@@ -217,7 +209,6 @@ function parseOtpAuthUri(uri) {
   }
 }
 
-// Eksekusi pemrosesan QR Code hasil pindai (Kamera/Unggah Berkas)
 function handleQrCodeResult(res) {
   if (res.startsWith('otpauth-migration://')) {
     const accounts = parseGoogleMigrationUri(res);
@@ -265,7 +256,6 @@ function handleQrCodeResult(res) {
   }
 }
 
-// --- RENDERING INTEGRASI BOX TOKEN OTP AKTIF ---
 function renderAuthenticatorKeys() {
   const container = document.getElementById('main-authenticator-list');
   if (!container) return;
@@ -378,7 +368,6 @@ function delete2FaKey(id) {
   }, 'fa-trash-can');
 }
 
-// --- TOTP CLOCK ENGINE (INTERPOLASI PROGRESS BAR SISA DETIK) ---
 function startTotpEngine() {
   if (totpIntervalId) clearInterval(totpIntervalId);
   
@@ -407,7 +396,6 @@ function startTotpEngine() {
   totpIntervalId = setInterval(updateTick, 1000);
 }
 
-// --- QR SCANNER KONTROL CAM ---
 function toggleQrScanner() {
   if (typeof Html5Qrcode === 'undefined') {
     showToast("Pustaka QR Scanner belum siap dimuat.", "error");
@@ -417,7 +405,7 @@ function toggleQrScanner() {
   const bText = document.getElementById('text-btn-scan');
   if (isScanning) {
     if (wrp) wrp.classList.add('hidden');
-    if (bText) bText.textContent = "Scan Kamera";
+    if (bText) bText.textContent = "Pindai Kamera";
     isScanning = false;
     if (qrScannerObj) {
       qrScannerObj.stop().catch(() => {});
