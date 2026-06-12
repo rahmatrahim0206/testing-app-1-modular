@@ -2,7 +2,6 @@
 // CENTRAL APPLICATION ENTRY POINT & GLOBAL STATE DECLARATIONS
 // ==========================================================
 
-// Konfigurasi Global Aplikasi
 var CONFIG = {
   SCHOOL_NAME_LONG: "UPT SPF SMP Negeri 3 Makassar",
   SCHOOL_NAME_SHORT: "SMP Negeri 3 Makassar",
@@ -14,12 +13,12 @@ var CONFIG = {
   CUTOFF_TITLE: "Batas Akhir Pemutakhiran Dapodik 2026",
   CUTOFF_DESC: "Batas waktu sinkronisasi data profil sekolah dan peserta didik untuk perhitungan dana BOS.",
   CUTOFF_FOOTER_TEXT: "Target Batas: 31 Agustus 2026",
-  SECURE_PASS_KEY: "dapohub-secure-universal-key-2026",
   STORAGE_PREFIX: "dapohub-",
+  SECURE_PASS_KEY: "dapohub-default-salt-key-2026", // Akan didefinisikan ulang berdasarkan Master PIN
   IDLE_LIMIT_MINUTES: 15
 };
 
-// Deklarasi Variabel State Global (Pencegahan Bug Temporal Dead Zone)
+// Deklarasi Variabel State Global (Mencegah Bug Temporal Dead Zone)
 var activeCategory = 'semua';
 var linksData = [];
 var agendaData = [];
@@ -34,8 +33,8 @@ var toastTimeoutId = null;
 var activeConfirmCallback = null;
 var idleTimeCounter = 0;
 var sessionLocked = false;
+var userMasterPin = ""; // State PIN aktif untuk kunci enkripsi dinamis
 
-// Template Baku Siaran WhatsApp (Sopan & Persuasif)
 var defaultWaTemplates = [
   { id: "rapor", name: "1. Pengumpulan Nilai E-Rapor", text: `Assalamu'alaikum Wr. Wb. Yth. Bapak/Ibu Guru {nama},\n\nDengan hormat, mohon bantuannya untuk segera melakukan pengisian dan sinkronisasi Nilai Rapor Kelas Anda pada aplikasi E-Rapor ${CONFIG.SCHOOL_NAME_SHORT} sebelum batas waktu pengumpulan.\n\nAtas dedikasi, kerja sama, dan perhatian Bapak/Ibu, kami ucapkan terima kasih.\n\nHormat kami,\nOperator Dapodik & IT` },
   { id: "data", name: "2. Verifikasi NIK & Berkas Dapodik", text: `Assalamu'alaikum Wr. Wb. Yth. Bapak/Ibu {nama},\n\nSehubungan dengan proses pemutakhiran data berkala, mohon kesediaan Bapak/Ibu untuk memeriksa kembali kesesuaian Nomor Induk Kependudukan (NIK) serta kelengkapan riwayat kerja di portal Dapodik.\n\nJika terdapat kekeliruan data, silakan menghubungi Operator Sekolah untuk perbaikan.\n\nTerima kasih,\nOperator Dapodik & IT` },
@@ -52,7 +51,7 @@ function renderAll() {
 function applyConfigToDOM() {
   document.getElementById('view-school-header').textContent = CONFIG.SCHOOL_NAME_LONG;
   document.getElementById('view-operator-name').textContent = CONFIG.OPERATOR_NAME;
-  document.getElementById('view-school-badge').textContent = CONFIG.SCHOOL_CODE_ABBR;
+  document.getElementById('view-school-badge-pfp').textContent = CONFIG.SCHOOL_CODE_ABBR;
   document.getElementById('view-cutoff-title').innerHTML = `<i class="fa-solid fa-clock-rotate-left animate-pulse"></i> ${CONFIG.CUTOFF_TITLE}`;
   document.getElementById('view-cutoff-desc').textContent = CONFIG.CUTOFF_DESC;
   document.getElementById('view-cutoff-footer-target').textContent = CONFIG.CUTOFF_FOOTER_TEXT;
@@ -69,11 +68,77 @@ function applyConfigToDOM() {
   }
 }
 
-// Inisialisasi Utama Saat Halaman Dimuat
-window.onload = () => {
-  applyConfigToDOM();
+// Handler Validasi & Pembuatan PIN Master untuk Keamanan Enkripsi Lokal
+function checkMasterPinSet() {
+  const pinHash = localStorage.getItem(CONFIG.STORAGE_PREFIX + "pin-hash");
+  const screen = document.getElementById('master-pin-screen');
+  const title = document.getElementById('pin-screen-title');
+  const desc = document.getElementById('pin-screen-desc');
+  const btnText = document.getElementById('pin-btn-text');
   
-  // Membaca Data Cadangan Terenkripsi Lokal
+  if (!pinHash) {
+    title.textContent = "Atur PIN Master Baru";
+    desc.textContent = "Buat 6-digit PIN Keamanan untuk mengenkripsi database kredensial dan data penting Anda di browser ini.";
+    btnText.textContent = "Atur PIN Baru";
+  } else {
+    title.textContent = "Masukkan PIN Master";
+    desc.textContent = "Gunakan PIN Master Anda untuk membuka enkripsi data sensitif (2FA, Catatan Saku, dan Agenda).";
+    btnText.textContent = "Buka Enkripsi";
+  }
+  screen.classList.remove('opacity-0', 'pointer-events-none');
+}
+
+function handlePinSubmit() {
+  const pinInput = document.getElementById('pin-input-field');
+  const pin = pinInput.value.trim();
+  if (pin.length !== 6 || isNaN(pin)) {
+    showToast("PIN harus berupa 6-digit angka!", "error");
+    return;
+  }
+
+  const savedHash = localStorage.getItem(CONFIG.STORAGE_PREFIX + "pin-hash");
+  const computedHash = CryptoJS.SHA256(pin).toString();
+
+  if (!savedHash) {
+    // Registrasi PIN Baru
+    localStorage.setItem(CONFIG.STORAGE_PREFIX + "pin-hash", computedHash);
+    userMasterPin = pin;
+    CONFIG.SECURE_PASS_KEY = pin + "dapohub-salt-2026";
+    showToast("PIN Master berhasil diatur!");
+    document.getElementById('master-pin-screen').classList.add('opacity-0', 'pointer-events-none');
+    initializeDataAndEngines();
+  } else {
+    // Validasi Cocok
+    if (computedHash === savedHash) {
+      userMasterPin = pin;
+      CONFIG.SECURE_PASS_KEY = pin + "dapohub-salt-2026";
+      showToast("Autentikasi PIN Berhasil!");
+      document.getElementById('master-pin-screen').classList.add('opacity-0', 'pointer-events-none');
+      initializeDataAndEngines();
+    } else {
+      showToast("PIN Master salah! Coba lagi.", "error");
+      pinInput.value = "";
+    }
+  }
+}
+
+function unlockWithPin() {
+  const pinInput = document.getElementById('lock-pin-input');
+  const pin = pinInput.value.trim();
+  const savedHash = localStorage.getItem(CONFIG.STORAGE_PREFIX + "pin-hash");
+  const computedHash = CryptoJS.SHA256(pin).toString();
+
+  if (computedHash === savedHash) {
+    pinInput.value = "";
+    unlockSession();
+  } else {
+    showToast("PIN Master tidak cocok!", "error");
+    pinInput.value = "";
+  }
+}
+
+function initializeDataAndEngines() {
+  // Membaca Data Cadangan Terenkripsi Lokal dengan Kunci Berbasis PIN
   linksData = secureRead(CONFIG.STORAGE_PREFIX + 'links');
   
   if (!linksData) {
@@ -85,7 +150,6 @@ window.onload = () => {
         renderDynamicLinks();
       })
       .catch(() => {
-        // Fallback jika tidak menggunakan server lokal (CORS file:// protocol)
         linksData = [...defaultSeedLinks];
         saveLinks();
         renderDynamicLinks();
@@ -102,7 +166,6 @@ window.onload = () => {
   ];
   waTemplates = secureRead(CONFIG.STORAGE_PREFIX + 'wa-templates') || [...defaultWaTemplates];
   
-  // Menjalankan Rendering & Engine Latar Belakang
   renderAll();
   initCalendar();
   populateWaSelect();
@@ -111,18 +174,22 @@ window.onload = () => {
   startCutOffCountdown();
   registerMainServiceWorker();
   updateOnlineStatus(navigator.onLine);
+  pingAllEndpoints(); // Inisialisasi Ping Otomatis
+}
 
-  // Pemasangan Event Listener Modal Konfirmasi
+// Bootstrap Awal Aplikasi
+window.addEventListener('DOMContentLoaded', () => {
+  applyConfigToDOM();
+  checkMasterPinSet();
+
   const cancelBtn = document.getElementById('btn-confirm-cancel');
   const okBtn = document.getElementById('btn-confirm-ok');
   if (cancelBtn) cancelBtn.onclick = () => closeCustomConfirm(false);
   if (okBtn) okBtn.onclick = () => closeCustomConfirm(true);
 
-  // Penanganan Status Koneksi Runtime
   window.addEventListener('offline', () => { showToast('⚠️ Mode Luring (Offline) Aktif.', 'warning'); updateOnlineStatus(false); });
   window.addEventListener('online', () => { showToast('⚡ Portal terhubung kembali dengan jaringan.', 'success'); updateOnlineStatus(true); });
 
-  // Detektor Keaktifan Sesi (Auto-Lock)
   ['mousemove', 'keypress', 'click', 'scroll', 'touchstart'].forEach(e => {
     document.addEventListener(e, resetIdleTimer);
   });
@@ -132,4 +199,4 @@ window.onload = () => {
   }, 60000);
 
   setInterval(updateClock, 1000);
-};
+});
