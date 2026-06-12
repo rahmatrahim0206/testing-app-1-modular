@@ -2,7 +2,18 @@
 // RENDER CONTROLLER, CATEGORIES, ASSISTANT WIDGETS & PWA KIT
 // ==========================================================
 
-function showToast(message, type = 'success') {
+// --- DEKLARASI & INITIALISASI VARIABEL GLOBAL (PENGAMAN EROR) ---
+if (typeof activeCategory === 'undefined') window.activeCategory = 'semua';
+if (typeof toastTimeoutId === 'undefined') window.toastTimeoutId = null;
+if (typeof activeConfirmCallback === 'undefined') window.activeConfirmCallback = null;
+if (typeof currentDateObj === 'undefined') window.currentDateObj = new Date();
+if (typeof linksData === 'undefined') window.linksData = [];
+if (typeof agendaData === 'undefined') window.agendaData = [];
+if (typeof notesData === 'undefined') window.notesData = [];
+if (typeof waTemplates === 'undefined') window.waTemplates = [];
+
+// --- SISTEM TOAST NOTIFICATION ---
+window.showToast = function(message, type = 'success') {
   const toast = document.getElementById('toast');
   const toastMsg = document.getElementById('toast-message');
   const toastIcon = document.getElementById('toast-icon');
@@ -23,7 +34,8 @@ function showToast(message, type = 'success') {
   }, 4000);
 }
 
-function showCustomConfirm(title, message, callback, iconClass = 'fa-circle-question') {
+// --- SISTEM MODAL CONFIRMATION CUSTOM ---
+window.showCustomConfirm = function(title, message, callback, iconClass = 'fa-circle-question') {
   const modal = document.getElementById('custom-confirm-modal');
   if (!modal) return;
   document.getElementById('confirm-modal-title').textContent = title;
@@ -34,7 +46,7 @@ function showCustomConfirm(title, message, callback, iconClass = 'fa-circle-ques
   modal.children[0].classList.replace('scale-95', 'scale-100');
 }
 
-function closeCustomConfirm(approved = false) {
+window.closeCustomConfirm = function(approved = false) {
   const modal = document.getElementById('custom-confirm-modal');
   if (!modal) return;
   modal.classList.add('opacity-0', 'pointer-events-none');
@@ -43,24 +55,37 @@ function closeCustomConfirm(approved = false) {
   activeConfirmCallback = null;
 }
 
-function renderDynamicLinks() {
+// --- RENDERING DAFTAR TAUTAN ---
+window.renderDynamicLinks = function() {
   const wrapper = document.getElementById('dynamic-links-wrapper');
   if (!wrapper) return;
   wrapper.innerHTML = '';
 
   const catMap = {
-    'utama': { title: 'Portal Utama & Dapodik', icon: 'fa-folder-open', color: 'text-blue-500' },
-    'verval': { title: 'Verval & Validasi', icon: 'fa-shield-halved', color: 'text-emerald-500' },
-    'keuangan': { title: 'BOS & Keuangan', icon: 'fa-wallet', color: 'text-amber-500' },
-    'guru': { title: 'Layanan GTK', icon: 'fa-chalkboard-user', color: 'text-indigo-500' },
-    'kepegawaian': { title: 'Layanan ASN', icon: 'fa-id-card-clip', color: 'text-sky-500' },
-    'ujian': { title: 'Asesmen (ANBK) & TKA', icon: 'fa-laptop-code', color: 'text-rose-500' },
+    'utama': { title: 'Dapodik & Portal Utama', icon: 'fa-folder-open', color: 'text-blue-500' },
+    'verval': { title: 'Verifikasi & Validasi (Verval)', icon: 'fa-shield-halved', color: 'text-emerald-500' },
+    'keuangan': { title: 'Anggaran & Keuangan Sekolah', icon: 'fa-wallet', color: 'text-amber-500' },
+    'guru': { title: 'Layanan Pendidik (GTK)', icon: 'fa-chalkboard-user', color: 'text-indigo-500' },
+    'kepegawaian': { title: 'Layanan Kepegawaian (ASN)', icon: 'fa-id-card-clip', color: 'text-sky-500' },
+    'portal_tka': { title: 'Asesmen Nasional & Ujian (Portal TKA/ANBK)', icon: 'fa-laptop-code', color: 'text-rose-500' },
     'daerah': { title: 'Portal Dinas & Daerah', icon: 'fa-city', color: 'text-purple-500' }
   };
 
-  const q = document.getElementById('search-input').value.toLowerCase().trim();
+  const searchInput = document.getElementById('search-input');
+  const q = searchInput ? searchInput.value.toLowerCase().trim() : '';
   let total = 0;
-  let counts = { semua: 0, utama: 0, verval: 0, keuangan: 0, guru: 0, kepegawaian: 0, pdf_tools: 6, ping_tools: 6, speedtest: 1, "2fa_auth": 0, ujian: 0, daerah: 0 };
+  let counts = { semua: 0, utama: 0, verval: 0, keuangan: 0, guru: 0, kepegawaian: 0, pdf_tools: 6, ping_tools: 6, speedtest: 1, "2fa_auth": 0, portal_tka: 0, daerah: 0 };
+
+  if (!linksData || !Array.isArray(linksData)) {
+    linksData = typeof defaultSeedLinks !== 'undefined' ? [...defaultSeedLinks] : [];
+  }
+
+  // NORMALISASI & MIGRASI DATA: Mengubah kategori lama 'ujian' ke kategori baru 'portal_tka' secara real-time
+  linksData.forEach(l => {
+    if (l.category === 'ujian') {
+      l.category = 'portal_tka';
+    }
+  });
 
   linksData.forEach(l => {
     if (l.title.toLowerCase().includes(q) || l.desc.toLowerCase().includes(q)) {
@@ -69,8 +94,7 @@ function renderDynamicLinks() {
     }
   });
   counts['semua'] = total;
-  counts['2fa_auth'] = authenticatorKeys.length;
-  counts['ping_tools'] = endpointsToMonitor.length;
+  counts['2fa_auth'] = typeof authenticatorKeys !== 'undefined' ? authenticatorKeys.length : 0;
 
   Object.keys(counts).forEach(k => {
     const b = document.getElementById(`badge-${k}`);
@@ -82,6 +106,7 @@ function renderDynamicLinks() {
     const filtered = linksData.filter(l => (activeCategory === 'semua' || activeCategory === cat) && l.category === cat && (l.title.toLowerCase().includes(q) || l.desc.toLowerCase().includes(q)));
     if (filtered.length > 0) {
       const sec = document.createElement('div');
+      sec.className = 'space-y-4 mb-6 animate-fade-in';
       sec.innerHTML = `<h3 class="text-xs font-black tracking-wider uppercase text-slate-400 mb-4 flex items-center gap-2"><i class="fa-solid ${catMap[cat].icon} ${catMap[cat].color}"></i> ${catMap[cat].title}</h3>`;
       
       const grid = document.createElement('div');
@@ -114,36 +139,37 @@ function renderDynamicLinks() {
   if (noRes) totalVis === 0 ? noRes.classList.remove('hidden') : noRes.classList.add('hidden');
 }
 
-function selectCategory(cat) {
+// --- FUNGSI KLIK KATEGORI UTAMA ---
+window.selectCategory = function(cat) {
   activeCategory = cat;
   const p2Fa = document.getElementById('panel-2fa-main-auth');
   const pLinks = document.getElementById('panel-links-main-wrapper');
   const pPdf = document.getElementById('panel-pdf-tools-wrapper');
   const pPing = document.getElementById('panel-ping-tools-wrapper');
   const pSpeed = document.getElementById('panel-speedtest-wrapper');
+  
+  if (p2Fa && pLinks && pPdf && pPing && pSpeed) {
+    p2Fa.classList.add('hidden');
+    pLinks.classList.add('hidden');
+    pPdf.classList.add('hidden');
+    pPing.classList.add('hidden');
+    pSpeed.classList.add('hidden');
 
-  if (!p2Fa || !pLinks || !pPdf || !pPing || !pSpeed) return;
-
-  // Sembunyikan Semua Panel Workspace Terlebih Dahulu
-  p2Fa.classList.add('hidden');
-  pLinks.classList.add('hidden');
-  pPdf.classList.add('hidden');
-  pPing.classList.add('hidden');
-  pSpeed.classList.add('hidden');
-
-  // Seleksi Panel Tampil
-  if (cat === '2fa_auth') {
-    p2Fa.classList.remove('hidden');
-    renderAuthenticatorKeys();
-  } else if (cat === 'pdf_tools') {
-    pPdf.classList.remove('hidden');
-  } else if (cat === 'ping_tools') {
-    pPing.classList.remove('hidden');
-    pingAllEndpoints();
-  } else if (cat === 'speedtest') {
-    pSpeed.classList.remove('hidden');
-  } else {
-    pLinks.classList.remove('hidden');
+    if (cat === '2fa_auth') {
+      p2Fa.classList.remove('hidden');
+      if (typeof renderAuthenticatorKeys === 'function') renderAuthenticatorKeys();
+    } else if (cat === 'pdf_tools') {
+      pPdf.classList.remove('hidden');
+      if (typeof resetPdfWorkspaces === 'function') resetPdfWorkspaces();
+    } else if (cat === 'ping_tools') {
+      pPing.classList.remove('hidden');
+      if (typeof initPingWorkspace === 'function') initPingWorkspace();
+    } else if (cat === 'speedtest') {
+      pSpeed.classList.remove('hidden');
+      if (typeof initSpeedtestWorkspace === 'function') initSpeedtestWorkspace();
+    } else {
+      pLinks.classList.remove('hidden');
+    }
   }
   
   document.querySelectorAll('.category-tab').forEach(t => {
@@ -160,45 +186,51 @@ function selectCategory(cat) {
   filterLinksOrKeys();
 }
 
-function filterLinksOrKeys() {
+window.filterLinksOrKeys = function() {
   const s = document.getElementById('search-input'); 
   const c = document.getElementById('clear-search');
   if (s && c) s.value.trim().length > 0 ? c.classList.remove('hidden') : c.classList.add('hidden');
   
-  if (activeCategory === '2fa_auth') {
-    renderAuthenticatorKeys();
-  } else if (activeCategory === 'pdf_tools' || activeCategory === 'ping_tools' || activeCategory === 'speedtest') {
-    // No search filters for direct workspaces
+  const noRes = document.getElementById('no-results-message');
+  
+  if (activeCategory === '2fa_auth' || activeCategory === 'pdf_tools' || activeCategory === 'ping_tools' || activeCategory === 'speedtest') {
+    if (noRes) noRes.classList.add('hidden');
+    if (activeCategory === '2fa_auth' && typeof renderAuthenticatorKeys === 'function') renderAuthenticatorKeys();
   } else {
     renderDynamicLinks();
   }
 }
 
-function clearSearchInput() { 
+window.clearSearchInput = function() { 
   const s = document.getElementById('search-input'); 
   if(s) s.value = ''; 
   filterLinksOrKeys(); 
 }
 
-// --- SISTEM WORKSPACE ASISTEN KANAN ---
-function switchCalendarMemoTab(t) {
-  ['calendar', 'memo'].forEach(id => {
-    const btn = document.getElementById(`btn-tab-${id}`);
-    const panel = document.getElementById(`panel-tab-${id}`);
-    if (btn) {
-      if (id === t) {
-        btn.className = "flex-1 py-2 px-1 rounded-xl text-[11px] font-extrabold bg-white dark:bg-slate-800 text-blue-600 shadow-sm";
-      } else {
-        btn.className = "flex-1 py-2 px-1 rounded-xl text-[11px] font-bold text-slate-500 hover:text-slate-800 dark:hover:text-slate-200";
-      }
-    }
-    if (panel) panel.classList.toggle('hidden', id !== t);
-  });
-  if (t === 'calendar') initCalendar();
+// --- SISTEM PANEL TAB KOTAK 1 (KALENDER & BUKU SAKU MEMO) ---
+window.switchCalendarMemoTab = function(t) {
+  const calendarBtn = document.getElementById('btn-tab-calendar');
+  const memoBtn = document.getElementById('btn-tab-memo');
+  const calendarPanel = document.getElementById('panel-tab-calendar');
+  const memoPanel = document.getElementById('panel-tab-memo');
+
+  if (t === 'calendar') {
+    if (calendarBtn) calendarBtn.className = "flex-1 py-2 px-1 rounded-xl text-[11px] font-extrabold bg-white dark:bg-slate-800 text-blue-600 shadow-sm";
+    if (memoBtn) memoBtn.className = "flex-1 py-2 px-1 rounded-xl text-[11px] font-bold text-slate-500 hover:text-slate-800 dark:hover:text-slate-200";
+    if (calendarPanel) calendarPanel.classList.remove('hidden');
+    if (memoPanel) memoPanel.classList.add('hidden');
+    initCalendar();
+  } else if (t === 'memo') {
+    if (calendarBtn) calendarBtn.className = "flex-1 py-2 px-1 rounded-xl text-[11px] font-bold text-slate-500 hover:text-slate-800 dark:hover:text-slate-200";
+    if (memoBtn) memoBtn.className = "flex-1 py-2 px-1 rounded-xl text-[11px] font-extrabold bg-white dark:bg-slate-800 text-blue-600 shadow-sm";
+    if (calendarPanel) calendarPanel.classList.add('hidden');
+    if (memoPanel) memoPanel.classList.remove('hidden');
+    renderQuickNotes();
+  }
 }
 
-// Dialog Pembuka / Penutup Modal
-function openAddAgendaModal() {
+// Modul Modal Dialog
+window.openAddAgendaModal = function() {
   const m = document.getElementById('add-agenda-modal');
   if (m) {
     m.classList.remove('opacity-0', 'pointer-events-none');
@@ -206,7 +238,7 @@ function openAddAgendaModal() {
   }
 }
 
-function closeAddAgendaModal() {
+window.closeAddAgendaModal = function() {
   const m = document.getElementById('add-agenda-modal');
   if (m) {
     m.classList.add('opacity-0', 'pointer-events-none');
@@ -214,7 +246,7 @@ function closeAddAgendaModal() {
   }
 }
 
-function openAddMemoModal() {
+window.openAddMemoModal = function() {
   const m = document.getElementById('add-memo-modal');
   if (m) {
     m.classList.remove('opacity-0', 'pointer-events-none');
@@ -222,7 +254,7 @@ function openAddMemoModal() {
   }
 }
 
-function closeAddMemoModal() {
+window.closeAddMemoModal = function() {
   const m = document.getElementById('add-memo-modal');
   if (m) {
     m.classList.add('opacity-0', 'pointer-events-none');
@@ -230,7 +262,7 @@ function closeAddMemoModal() {
   }
 }
 
-function openAddLinkModal() {
+window.openAddLinkModal = function() {
   const m = document.getElementById('add-link-modal');
   if (m) {
     m.classList.remove('opacity-0', 'pointer-events-none');
@@ -238,7 +270,7 @@ function openAddLinkModal() {
   }
 }
 
-function closeAddLinkModal() {
+window.closeAddLinkModal = function() {
   const m = document.getElementById('add-link-modal');
   if (m) {
     m.classList.add('opacity-0', 'pointer-events-none');
@@ -246,45 +278,51 @@ function closeAddLinkModal() {
   }
 }
 
-// --- AGENDA KERJA ---
-function saveAgenda() { secureSave(CONFIG.STORAGE_PREFIX + 'agendas', agendaData); }
+// --- TAB ASISTEN: AGENDA KERJA ---
+function saveAgenda() { if (typeof secureSave === 'function') secureSave(CONFIG.STORAGE_PREFIX + 'agendas', agendaData); }
 
-function renderAgenda() {
+window.renderAgenda = function() {
   const c = document.getElementById('agenda-list-container');
   if (!c) return;
-  c.innerHTML = '';
-  const f = document.getElementById('agenda-filter').value;
+  
+  const fragment = document.createDocumentFragment();
+  const filterEl = document.getElementById('agenda-filter');
+  const f = filterEl ? filterEl.value : 'semua';
   const tasks = agendaData.filter(t => f === 'semua' ? true : (f === 'belum' ? !t.done : t.done)).sort((a,b)=>a.createdAt-b.createdAt);
   
   tasks.forEach(t => {
     const d = document.createElement('div');
     d.className = 'flex justify-between items-start gap-2 p-2 bg-slate-50 dark:bg-slate-900 rounded-xl border border-slate-100 dark:border-slate-800 group';
     d.innerHTML = `
-      <label class="flex gap-2 flex-1 cursor-pointer text-slate-750 dark:text-slate-200">
+      <label class="flex gap-2 flex-1 cursor-pointer">
         <input type="checkbox" ${t.done?'checked':''} onchange="toggleTaskDone('${t.id}')" class="mt-1 h-3 w-3 rounded text-blue-600 focus:ring-blue-500">
         <span class="text-xs ${t.done?'line-through opacity-50':''}">${t.text}</span>
       </label>
       <button onclick="deleteAgendaItem('${t.id}')" class="text-rose-500 opacity-0 group-hover:opacity-100 transition p-1">
         <i class="fa-solid fa-trash-can text-[10px]"></i>
       </button>`;
-    c.appendChild(d);
+    fragment.appendChild(d);
   });
+  
+  c.innerHTML = '';
+  c.appendChild(fragment);
   updateCountdownTask();
 }
 
-function addAgendaItem() {
-  const t = document.getElementById('agenda-input-text').value.trim();
+window.addAgendaItem = function() {
+  const input = document.getElementById('agenda-input-text');
+  const t = input ? input.value.trim() : '';
   if(t) {
     agendaData.push({ id: 'ag-'+Date.now(), text: t, done: false, createdAt: Date.now() });
     saveAgenda();
     renderAgenda();
     closeAddAgendaModal();
-    document.getElementById('agenda-input-text').value = '';
-    showToast("Tugas baru berhasil disimpan!");
+    if (input) input.value = '';
+    showToast("Tugas baru berhasil disimpan ke agenda!");
   }
 }
 
-function toggleTaskDone(id) {
+window.toggleTaskDone = function(id) {
   const t = agendaData.find(x=>x.id===id);
   if(t) {
     t.done = !t.done;
@@ -293,24 +331,24 @@ function toggleTaskDone(id) {
   }
 }
 
-function deleteAgendaItem(id) {
+window.deleteAgendaItem = function(id) {
   agendaData = agendaData.filter(x=>x.id!==id);
   saveAgenda();
   renderAgenda();
-  showToast("Tugas dihapus.");
+  showToast("Tugas berhasil dihapus.");
 }
 
 function updateCountdownTask() {
   const txt = document.getElementById('countdown-active-task-text');
   const btn = document.getElementById('countdown-active-task-btn');
   const p = agendaData.find(t=>!t.done);
-  if(txt) txt.textContent = p ? p.text : "✅ Semua tugas sinkronisasi selesai!";
+  if(txt) txt.textContent = p ? p.text : "✅ Semua agenda pekerjaan telah selesai!";
   if(btn) p ? btn.classList.remove('hidden') : btn.classList.add('hidden');
   if(btn && p) btn.onclick = () => toggleTaskDone(p.id);
 }
 
-// --- KALENDER KERJA ---
-function initCalendar() {
+// --- TAB ASISTEN: KALENDER KERJA DENGAN MEMO AKTIF ---
+window.initCalendar = function() {
   const names = ["Januari","Februari","Maret","April","Mei","Juni","Juli","Agustus","September","Oktober","November","Desember"];
   const y = currentDateObj.getFullYear();
   const m = currentDateObj.getMonth();
@@ -318,107 +356,212 @@ function initCalendar() {
   if (headerTitle) headerTitle.textContent = `${names[m]} ${y}`;
   const c = document.getElementById('calendar-days-grid');
   if (!c) return;
-  c.innerHTML = '';
+
   const fd = new Date(y, m, 1).getDay();
   const td = new Date(y, m+1, 0).getDate();
-  for(let i=0; i<fd; i++) c.innerHTML += `<div></div>`;
   const today = new Date();
+  
+  let htmlBuffer = [];
+  
+  for(let i=0; i<fd; i++) {
+    htmlBuffer.push(`<div></div>`);
+  }
+  
   for(let d=1; d<=td; d++) {
     const isT = today.getDate()===d && today.getMonth()===m && today.getFullYear()===y;
-    c.innerHTML += `<div onclick="document.getElementById('calendar-event-display').innerHTML='<p class=\\'text-[10px] font-bold text-blue-600 dark:text-blue-400\\'><i class=\\'fa-solid fa-circle-info\\'></i> Tgl: ${d} ${names[m]} ${y}</p>'" class="p-1 rounded cursor-pointer ${isT ? 'bg-blue-600 text-white font-bold':'hover:bg-blue-50 dark:hover:bg-slate-700'}">${d}</div>`;
+    // Format pembanding standar YYYY-MM-DD dengan pad nol di depan bulan & hari
+    const dateStr = `${y}-${String(m+1).padStart(2,'0')}-${String(d).padStart(2,'0')}`;
+    const hasNote = notesData.some(n => n.date === dateStr);
+    
+    let itemClass = 'hover:bg-blue-50 dark:hover:bg-slate-700 text-slate-700 dark:text-slate-300';
+    if (isT) {
+      itemClass = 'bg-blue-600 text-white font-bold shadow-sm';
+    } else if (hasNote) {
+      itemClass = 'bg-amber-100 dark:bg-amber-950/40 text-amber-700 dark:text-amber-400 font-bold';
+    }
+    
+    const indicatorDot = (hasNote && !isT) ? `<span class="absolute bottom-0.5 left-1/2 -translate-x-1/2 block w-1 h-1 rounded-full bg-amber-500"></span>` : '';
+    
+    // PERBAIKAN: Parameter showDateMemos diselaraskan pengirimannya agar konsisten membaca tanggal terstandar
+    htmlBuffer.push(`
+      <div onclick="showDateMemos('${d}', ${m}, ${y})" 
+           class="p-1 rounded cursor-pointer transition-colors duration-150 relative ${itemClass}">
+        ${d}
+        ${indicatorDot}
+      </div>
+    `);
+  }
+  
+  c.innerHTML = htmlBuffer.join('');
+}
+
+window.showDateMemos = function(day, month, year) {
+  const names = ["Januari","Februari","Maret","April","Mei","Juni","Juli","Agustus","September","Oktober","November","Desember"];
+  // PERBAIKAN: Format penanggalan dipastikan dipadatkan dengan nol agar cocok dengan notesData.date
+  const dateStr = `${year}-${String(month+1).padStart(2,'0')}-${String(day).padStart(2,'0')}`;
+  const filteredMemos = notesData.filter(n => n.date === dateStr);
+  const displayEl = document.getElementById('calendar-event-display');
+  
+  if (!displayEl) return;
+  
+  if (filteredMemos.length === 0) {
+    displayEl.innerHTML = `<p class="text-[10px] text-slate-400 italic"><i class="fa-solid fa-info-circle text-blue-400"></i> Tidak ada memo pada tanggal ${day} ${names[month]} ${year}.</p>`;
+  } else {
+    let listHtml = `<div class="space-y-2"><p class="text-[10px] text-slate-500 font-black uppercase tracking-wide">📅 Memo ${day} ${names[month]}:</p>`;
+    filteredMemos.forEach(n => {
+      listHtml += `
+        <div class="p-2 bg-amber-50/50 dark:bg-amber-950/20 border border-amber-100 dark:border-amber-900/30 rounded-xl animate-fade-in">
+          <h5 class="text-[10px] font-black text-amber-800 dark:text-amber-400">${n.title}</h5>
+          <p class="text-[9px] text-slate-500 dark:text-slate-400 mt-0.5 leading-relaxed">${n.body}</p>
+        </div>
+      `;
+    });
+    listHtml += `</div>`;
+    displayEl.innerHTML = listHtml;
   }
 }
 
-function prevMonth() { currentDateObj.setMonth(currentDateObj.getMonth()-1); initCalendar(); }
-function nextMonth() { currentDateObj.setMonth(currentDateObj.getMonth()+1); initCalendar(); }
+window.prevMonth = function() { currentDateObj.setMonth(currentDateObj.getMonth()-1); initCalendar(); }
+window.nextMonth = function() { currentDateObj.setMonth(currentDateObj.getMonth()+1); initCalendar(); }
 
-// --- BUKU SAKU (MEMO CATATAN) ---
-function renderQuickNotes() {
+// --- TAB ASISTEN: BUKU SAKU MEMO ---
+window.renderQuickNotes = function() {
   const c = document.getElementById('quick-notes-list');
   if(!c) return;
-  c.innerHTML = '';
+  
+  const fragment = document.createDocumentFragment();
+  
   notesData.forEach(n => {
-    c.innerHTML += `
-      <div class="p-2 border rounded-xl bg-slate-50/50 dark:bg-slate-900/30 relative group font-sans">
-        <h5 class="text-[10px] font-bold text-slate-800 dark:text-white">${n.title}</h5>
-        <p class="text-[9px] text-slate-500 leading-relaxed line-clamp-2">${n.body}</p>
-        <button onclick="notesData=notesData.filter(x=>x.id!=='${n.id}'); secureSave(CONFIG.STORAGE_PREFIX + 'notes', notesData); renderQuickNotes();" class="absolute top-2 right-2 opacity-0 group-hover:opacity-100 text-rose-500 transition">
-          <i class="fa-solid fa-trash text-[9px]"></i>
-        </button>
-      </div>`;
+    const itemDiv = document.createElement('div');
+    itemDiv.className = 'p-3 border border-slate-150 dark:border-slate-700/60 rounded-xl bg-slate-50/50 dark:bg-slate-900/30 relative group font-sans';
+    
+    const dateFormatted = n.date ? n.date.split('-').reverse().join('/') : "-";
+    
+    const h5 = document.createElement('h5');
+    h5.className = 'text-[10px] font-bold text-slate-800 dark:text-white flex items-center justify-between pr-4';
+    h5.innerHTML = `<span>${n.title}</span> <span class="text-[8px] bg-slate-100 dark:bg-slate-800 px-1 py-0.5 rounded text-slate-500 font-mono">${dateFormatted}</span>`;
+    
+    const p = document.createElement('p');
+    p.className = 'text-[9px] text-slate-500 dark:text-slate-400 leading-relaxed line-clamp-3 mt-1';
+    p.textContent = n.body;
+    
+    const btn = document.createElement('button');
+    btn.className = 'absolute top-2 right-2 opacity-0 group-hover:opacity-100 text-rose-500 transition';
+    btn.innerHTML = '<i class="fa-solid fa-trash text-[9px]"></i>';
+    btn.onclick = () => {
+      notesData = notesData.filter(x => x.id !== n.id);
+      if (typeof secureSave === 'function') secureSave(CONFIG.STORAGE_PREFIX + 'notes', notesData);
+      renderQuickNotes();
+      initCalendar();
+    };
+    
+    itemDiv.appendChild(h5);
+    itemDiv.appendChild(p);
+    itemDiv.appendChild(btn);
+    fragment.appendChild(itemDiv);
   });
+  
+  c.innerHTML = '';
+  c.appendChild(fragment);
 }
 
-function addQuickNote() {
-  const t = document.getElementById('note-title-input').value.trim();
-  const b = document.getElementById('note-body-input').value.trim();
-  if(t && b) {
-    notesData.push({ id: 'n-'+Date.now(), title: t, body: b });
-    secureSave(CONFIG.STORAGE_PREFIX + 'notes', notesData);
+window.addQuickNote = function() {
+  const tEl = document.getElementById('note-title-input');
+  const dEl = document.getElementById('note-date-input');
+  const bEl = document.getElementById('note-body-input');
+  const t = tEl ? tEl.value.trim() : '';
+  const d = dEl ? dEl.value : '';
+  const b = bEl ? bEl.value.trim() : '';
+  
+  if(t && d && b) {
+    notesData.push({ id: 'n-'+Date.now(), title: t, date: d, body: b });
+    if (typeof secureSave === 'function') secureSave(CONFIG.STORAGE_PREFIX + 'notes', notesData);
     renderQuickNotes();
+    initCalendar();
     closeAddMemoModal();
-    document.getElementById('note-title-input').value = '';
-    document.getElementById('note-body-input').value = '';
-    showToast("Memo berhasil ditambahkan!");
+    if(tEl) tEl.value = '';
+    if(dEl) dEl.value = '';
+    if(bEl) bEl.value = '';
+    showToast("Memo catatan berhasil disimpan!");
+  } else {
+    showToast("Mohon lengkapi seluruh isian memo!", "warning");
   }
 }
 
-// --- BROADCAST WHATSAPP & PWA KIT ---
-function populateWaSelect() {
+// --- TAB ASISTEN: BROADCAST WHATSAPP ---
+window.populateWaSelect = function() {
   const s = document.getElementById('wa-template-select');
   if(s) {
     s.innerHTML = '';
-    waTemplates.forEach(t => s.innerHTML += `<option value="${t.id}">${t.name}</option>`);
+    const fragment = document.createDocumentFragment();
+    waTemplates.forEach(t => {
+      const opt = document.createElement('option');
+      opt.value = t.id;
+      opt.textContent = t.name;
+      fragment.appendChild(opt);
+    });
+    s.appendChild(fragment);
   }
 }
 
-function copyBroadcastMessage() {
-  const t = waTemplates.find(x=>x.id===document.getElementById('wa-template-select').value);
-  if(t) copyText(t.text.replace(/{nama}/g, document.getElementById('wa-recipient-name').value || "Bapak/Ibu"));
+window.copyBroadcastMessage = function() {
+  const select = document.getElementById('wa-template-select');
+  const recInput = document.getElementById('wa-recipient-name');
+  if(!select) return;
+  const t = waTemplates.find(x=>x.id===select.value);
+  if(t && typeof copyText === 'function') {
+    copyText(t.text.replace(/{nama}/g, recInput ? recInput.value || "Bapak/Ibu Guru" : "Bapak/Ibu Guru"), "Pesan siaran WhatsApp berhasil disalin!");
+  }
 }
 
-function sendBroadcastWhatsApp() {
-  const t = waTemplates.find(x=>x.id===document.getElementById('wa-template-select').value);
-  if(t) window.open(`https://api.whatsapp.com/send?text=${encodeURIComponent(t.text.replace(/{nama}/g, document.getElementById('wa-recipient-name').value || "Bapak/Ibu"))}`, '_blank');
+window.sendBroadcastWhatsApp = function() {
+  const select = document.getElementById('wa-template-select');
+  const recInput = document.getElementById('wa-recipient-name');
+  if(!select) return;
+  const t = waTemplates.find(x=>x.id===select.value);
+  if(t) window.open(`https://api.whatsapp.com/send?text=${encodeURIComponent(t.text.replace(/{nama}/g, recInput ? recInput.value || "Bapak/Ibu Guru" : "Bapak/Ibu Guru"))}`, '_blank');
 }
 
-function openTemplatesModal() {
+window.openTemplatesModal = function() {
   const m = document.getElementById('templates-modal');
   if (m) {
-    m.classList.remove('opacity-0','pointer-events-none');
-    m.children[0].classList.replace('scale-95','scale-100');
+    m.classList.remove('opacity-0', 'pointer-events-none');
+    m.children[0].classList.replace('scale-95', 'scale-100');
     renderTemplatesList();
   }
 }
 
-function closeTemplatesModal() {
+window.closeTemplatesModal = function() {
   const m = document.getElementById('templates-modal');
   if (m) {
-    m.classList.add('opacity-0','pointer-events-none');
-    m.children[0].classList.replace('scale-100','scale-95');
+    m.classList.add('opacity-0', 'pointer-events-none');
+    m.children[0].classList.replace('scale-100', 'scale-95');
   }
 }
 
-function renderTemplatesList() {
+window.renderTemplatesList = function() {
   const container = document.getElementById('templates-list-container');
   if(!container) return;
-  container.innerHTML = '';
+  
+  const buffer = [];
   waTemplates.forEach(t => {
-    container.innerHTML += `
-      <div class="p-3 border dark:border-slate-700 bg-slate-50 dark:bg-slate-900/60 rounded-xl flex justify-between items-start gap-2">
+    buffer.push(`
+      <div class="p-3 border dark:border-slate-700 bg-slate-50 dark:bg-slate-900/60 rounded-xl flex justify-between items-start gap-2 animate-fade-in">
         <div class="truncate flex-1">
           <h5 class="text-xs font-bold truncate text-slate-800 dark:text-white">${t.name}</h5>
           <p class="text-[10px] text-slate-500 truncate mt-0.5">${t.text}</p>
         </div>
         <div class="flex gap-1.5 flex-shrink-0">
-          <button onclick="editTemplate('${t.id}')" class="text-blue-500 hover:text-blue-700 transition" title="Edit"><i class="fa-solid fa-pen-to-square"></i></button>
+          <button onclick="editTemplate('${t.id}')" class="text-blue-500 hover:text-blue-700 transition" title="Ubah"><i class="fa-solid fa-pen-to-square"></i></button>
           <button onclick="deleteTemplate('${t.id}')" class="text-rose-500 hover:text-rose-700 transition" title="Hapus"><i class="fa-solid fa-trash-can"></i></button>
         </div>
-      </div>`;
+      </div>
+    `);
   });
+  container.innerHTML = buffer.join('');
 }
 
-function showAddTemplateForm() {
+window.showAddTemplateForm = function() {
   const lv = document.getElementById('templates-list-view');
   const fv = document.getElementById('template-form-view');
   if (lv && fv) {
@@ -430,7 +573,7 @@ function showAddTemplateForm() {
   document.getElementById('template-text-input').value = '';
 }
 
-function hideTemplateForm() {
+window.hideTemplateForm = function() {
   const lv = document.getElementById('templates-list-view');
   const fv = document.getElementById('template-form-view');
   if (lv && fv) {
@@ -439,7 +582,7 @@ function hideTemplateForm() {
   }
 }
 
-function saveTemplate() {
+window.saveTemplate = function() {
   const id = document.getElementById('template-edit-id').value;
   const name = document.getElementById('template-name-input').value.trim();
   const text = document.getElementById('template-text-input').value.trim();
@@ -450,14 +593,14 @@ function saveTemplate() {
   } else {
     waTemplates.push({ id: 'wat-'+Date.now(), name, text });
   }
-  secureSave(CONFIG.STORAGE_PREFIX + 'wa-templates', waTemplates);
+  if (typeof secureSave === 'function') secureSave(CONFIG.STORAGE_PREFIX + 'wa-templates', waTemplates);
   populateWaSelect();
   renderTemplatesList();
   hideTemplateForm();
   showToast("Template pesan berhasil disimpan!");
 }
 
-function editTemplate(id) {
+window.editTemplate = function(id) {
   const t = waTemplates.find(x => x.id === id);
   if(t) {
     showAddTemplateForm();
@@ -467,17 +610,18 @@ function editTemplate(id) {
   }
 }
 
-function deleteTemplate(id) {
-  showCustomConfirm("Hapus Template?", "Template pesan ini akan dihapus secara permanen.", () => {
+window.deleteTemplate = function(id) {
+  showCustomConfirm("Hapus Template?", "Template siaran pesan ini akan dihapus secara permanen.", () => {
     waTemplates = waTemplates.filter(x => x.id !== id);
-    secureSave(CONFIG.STORAGE_PREFIX + 'wa-templates', waTemplates);
+    if (typeof secureSave === 'function') secureSave(CONFIG.STORAGE_PREFIX + 'wa-templates', waTemplates);
     populateWaSelect();
     renderTemplatesList();
     showToast("Template berhasil dihapus.");
   }, 'fa-trash-can');
 }
 
-function downloadPwaFile(fileType) {
+// --- PWA OFFLINE DEPLOYMENT KIT DOWNLOADER ---
+window.downloadPwaFile = function(fileType) {
   let content = "", filename = "", mimeType = "";
   if (fileType === 'manifest') {
     content = manifestJsonText; filename = "manifest.json"; mimeType = "application/json";
@@ -493,38 +637,42 @@ function downloadPwaFile(fileType) {
   a.click();
   document.body.removeChild(a);
   URL.revokeObjectURL(url);
-  showToast(`Berkas ${filename} berhasil diunduh! Taruh berkas ini di root folder bersama index.html Anda.`, "success");
+  showToast(`Berkas ${filename} berhasil diunduh! Silakan taruh di folder root Anda.`, "success");
 }
 
-function registerMainServiceWorker() {
+window.registerMainServiceWorker = function() {
   const statusText = document.getElementById('pwa-sw-status-text');
   const statusDot = document.getElementById('pwa-sw-status-dot');
   if ('serviceWorker' in navigator) {
     navigator.serviceWorker.register('./sw.js')
       .then(() => {
-        if (statusText) statusText.textContent = "Aktif (Terdaftar)";
+        if (statusText) statusText.textContent = "Aktif (Layanan Luring Siap)";
         if (statusDot) statusDot.className = "w-1.5 h-1.5 rounded-full bg-emerald-500";
       })
       .catch(() => {
-        if (statusText) statusText.textContent = "Siap Diinstal (Gunakan Kit)";
+        if (statusText) statusText.textContent = "Dukung Luring (Gunakan Paket)";
         if (statusDot) statusDot.className = "w-1.5 h-1.5 rounded-full bg-amber-500 animate-pulse";
       });
   } else {
-    if (statusText) statusText.textContent = "Tidak Didukung Browser";
+    if (statusText) statusText.textContent = "Tidak Didukung Peramban";
     if (statusDot) statusDot.className = "w-1.5 h-1.5 rounded-full bg-rose-500";
   }
 }
 
-function startCutOffCountdown() {
+// Real-time Countdown Cut-off BOS (Diselaraskan scope-nya dengan instansiasi window global)
+window.startCutOffCountdown = function() {
+  if (typeof CONFIG === 'undefined' || !CONFIG.CUTOFF_DATE) return;
   const targetDate = new Date(CONFIG.CUTOFF_DATE).getTime();
+  const daysEl = document.getElementById("countdown-days");
+  const hoursEl = document.getElementById("countdown-hours");
+  const minutesEl = document.getElementById("countdown-minutes");
+  const secondsEl = document.getElementById("countdown-seconds");
+  
+  if (!daysEl || !hoursEl || !minutesEl || !secondsEl) return;
+
   function updateCountdown() {
-    const now = new Date().getTime();
+    const now = Date.now();
     const distance = targetDate - now;
-    const daysEl = document.getElementById("countdown-days");
-    const hoursEl = document.getElementById("countdown-hours");
-    const minutesEl = document.getElementById("countdown-minutes");
-    const secondsEl = document.getElementById("countdown-seconds");
-    if (!daysEl || !hoursEl || !minutesEl || !secondsEl) return;
 
     if (distance < 0) {
       daysEl.textContent = "00";
@@ -533,35 +681,47 @@ function startCutOffCountdown() {
       secondsEl.textContent = "00";
       return;
     }
-    daysEl.textContent = String(Math.floor(distance / (1000 * 60 * 60 * 24))).padStart(2, '0');
-    hoursEl.textContent = String(Math.floor((distance % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60))).padStart(2, '0');
-    minutesEl.textContent = String(Math.floor((distance % (1000 * 60 * 60)) / (1000 * 60))).padStart(2, '0');
-    secondsEl.textContent = String(Math.floor((distance % (1000 * 60)) / 1000)).padStart(2, '0');
+    
+    const d = Math.floor(distance / 86400000);
+    const h = Math.floor((distance % 86400000) / 3600000);
+    const m = Math.floor((distance % 3600000) / 60000);
+    const s = Math.floor((distance % 60000) / 1000);
+    
+    daysEl.textContent = d < 10 ? '0' + d : d;
+    hoursEl.textContent = h < 10 ? '0' + h : h;
+    minutesEl.textContent = m < 10 ? '0' + m : m;
+    secondsEl.textContent = s < 10 ? '0' + s : s;
   }
+  
   updateCountdown();
   setInterval(updateCountdown, 1000);
 }
 
-const manifestJsonText = `{
-  "name": "DAPO-HUB SPENTIG",
-  "short_name": "DAPO-HUB",
-  "description": "Portal Integrasi Operator Dapodik & IT SMP Negeri 3 Makassar",
-  "start_url": "index.html",
-  "display": "standalone",
-  "background_color": "#f8fafc",
-  "theme_color": "#2563eb",
-  "icons": [
-    {
-      "src": "https://cdn-icons-png.flaticon.com/512/2210/2210143.png",
-      "sizes": "512x512",
-      "type": "image/png"
-    }
-  ]
-}`;
+const manifestJsonText = `{\n  "name": "DAPO-HUB SPENTIG",\n  "short_name": "DAPO-HUB",\n  "description": "Portal Integrasi Operator Dapodik & IT SMP Negeri 3 Makassar",\n  "start_url": "index.html",\n  "display": "standalone",\n  "background_color": "#f8fafc",\n  "theme_color": "#2563eb",\n  "icons": [\n    {\n      "src": "https://cdn-icons-png.flaticon.com/512/2210/2210143.png",\n      "sizes": "512x512",\n      "type": "image/png"\n    }\n  ]\n}`;
 
 const serviceWorkerJsText = `
   const CACHE_NAME = 'dapohub-cache-v3';
-  const ASSETS_TO_CACHE = ['./', './index.html', './manifest.json'];
+  const ASSETS_TO_CACHE = [
+    './',
+    './index.html',
+    './manifest.json',
+    './css/style.css',
+    './js/utils.js',
+    './js/storage.js',
+    './js/otp.js',
+    './js/links.js',
+    './js/pdf-tools.js',
+    './js/ping-tools.js',
+    './js/speedtest.js',
+    './js/ui.js',
+    './js/app.js',
+    'https://cdn.tailwindcss.com',
+    'https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css',
+    'https://cdnjs.cloudflare.com/ajax/libs/html5-qrcode/2.3.8/html5-qrcode.min.js',
+    'https://cdnjs.cloudflare.com/ajax/libs/crypto-js/4.2.0/crypto-js.min.js',
+    'https://unpkg.com/pdf-lib@1.17.1/dist/pdf-lib.min.js',
+    'https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.4.120/pdf.min.js'
+  ];
   self.addEventListener('install', (e) => e.waitUntil(caches.open(CACHE_NAME).then((c) => c.addAll(ASSETS_TO_CACHE))));
   self.addEventListener('activate', (e) => e.waitUntil(caches.keys().then((keys) => Promise.all(keys.filter(k => k !== CACHE_NAME).map(k => caches.delete(k))))));
   self.addEventListener('fetch', (e) => {
