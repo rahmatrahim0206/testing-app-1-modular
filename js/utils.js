@@ -2,7 +2,7 @@
 // UTILITY FUNCTIONS, CLOCK, THEME, AND IDLE CONTROL
 // ==========================================================
 
-// Fungsi Salin Teks ke Clipboard
+// Fungsi Salin Teks ke Clipboard (Aman untuk iFrame Sandbox)
 function copyText(textToCopy, successMessage) {
   const dummy = document.createElement('textarea');
   dummy.value = textToCopy;
@@ -10,12 +10,14 @@ function copyText(textToCopy, successMessage) {
   dummy.select();
   document.execCommand('copy');
   document.body.removeChild(dummy);
-  showToast(successMessage || "Teks berhasil disalin!");
+  if (typeof showToast === 'function') {
+    showToast(successMessage || "Teks berhasil disalin!");
+  }
 }
 
 // Fungsi Acak Kata Sandi Aman
 function generateSecurePassword() {
-  const chars = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789!@#$%^&*()_+";
+  const chars = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789!@#$%^&*()_+\";";
   let pass = "";
   for (let i = 0; i < 12; i++) {
     pass += chars.charAt(Math.floor(Math.random() * chars.length));
@@ -102,6 +104,73 @@ function unlockSession() {
     screen.classList.replace('pointer-events-auto', 'pointer-events-none');
     screen.classList.replace('opacity-100', 'opacity-0');
     card.classList.replace('scale-100', 'scale-95');
-    showToast("Sesi kerja berhasil dipulihkan!", "success");
+    if (typeof showToast === 'function') {
+      showToast("Sesi kerja berhasil dipulihkan!", "success");
+    }
   }
 }
+
+// --- PERBAIKAN SISTEM PROTEKSI & SALIN (COPY-PASTE) ---
+
+// 1. Mencegah Klik Kanan (Context Menu) di Seluruh Area Aplikasi Secara Mutlak (Termasuk INPUT dan TEXTAREA)
+document.addEventListener('contextmenu', function(e) {
+  e.preventDefault();
+  if (typeof showToast === 'function') {
+    showToast("⚠️ Klik kanan dinonaktifkan demi keamanan kredensial dan perlindungan kode.", "warning");
+  }
+});
+
+// 2. SISTEM MONITOR TOMBOL PINTAS: Memblokir DevTools/Inspeksi, Mengizinkan Ctrl+C (Menyalin) & Ctrl+D (Bookmark/Pengingat Aman)
+document.addEventListener('keydown', function(e) {
+  // A. Blokir tombol F12 (Developer Tools)
+  if (e.keyCode === 123) {
+    e.preventDefault();
+    if (typeof showToast === 'function') showToast("⚠️ Developer tools dinonaktifkan.", "error");
+    return false;
+  }
+  
+  // B. Blokir Ctrl+Shift+I (Inspeksi Elemen)
+  if (e.ctrlKey && e.shiftKey && e.keyCode === 73) {
+    e.preventDefault();
+    if (typeof showToast === 'function') showToast("⚠️ Inspeksi elemen dilarang.", "error");
+    return false;
+  }
+  
+  // C. Blokir Ctrl+Shift+J (Akses Konsol DevTools)
+  if (e.ctrlKey && e.shiftKey && e.keyCode === 74) {
+    e.preventDefault();
+    if (typeof showToast === 'function') showToast("⚠️ Akses konsol dinonaktifkan.", "error");
+    return false;
+  }
+
+  // D. Blokir Ctrl+Shift+C (Inspeksi melalui Kursor Element Selector)
+  if (e.ctrlKey && e.shiftKey && e.keyCode === 67) {
+    e.preventDefault();
+    if (typeof showToast === 'function') showToast("⚠️ Fitur inspeksi dinonaktifkan.", "error");
+    return false;
+  }
+  
+  // E. Blokir Ctrl+U (Akses Source Code)
+  if (e.ctrlKey && e.keyCode === 85) {
+    e.preventDefault();
+    if (typeof showToast === 'function') showToast("⚠️ Akses kode sumber dinonaktifkan.", "error");
+    return false;
+  }
+
+  // F. Izinkan Ctrl+C Biasa (Menyalin Teks)
+  if (e.ctrlKey && !e.shiftKey && e.keyCode === 67) {
+    // Membiarkan peramban menyalin data clipboard secara normal dan aman
+    setTimeout(() => {
+      if (typeof showToast === 'function') {
+        showToast("📋 Teks berhasil disalin ke papan klip!", "success");
+      }
+    }, 50);
+  }
+  
+  // G. Izinkan Ctrl+D (Pintasan Bookmark / Duplikasi)
+  if (e.ctrlKey && e.keyCode === 68) {
+    if (typeof showToast === 'function') {
+      showToast("🔒 Pintasan Ctrl+D terpantau aman oleh sistem.", "warning");
+    }
+  }
+});
