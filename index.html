@@ -163,10 +163,10 @@
                 <span id="badge-kepegawaian" class="ml-1.5 bg-slate-200 dark:bg-slate-700 px-1.5 py-0.5 rounded text-[10px] font-mono">0</span>
               </button>
               
-              <!-- Tab Menu: Asesmen & Ujian (ANBK/TKA) -->
-              <button onclick="selectCategory('ujian')" data-category="ujian" class="category-tab inline-flex lg:flex items-center justify-between w-auto lg:w-full px-4 py-2.5 text-xs font-bold rounded-xl bg-slate-100 text-slate-600 dark:bg-slate-800 dark:text-slate-400 hover:bg-slate-200">
+              <!-- Tab Menu: Asesmen & Ujian (PORTAL_TKA) - PERBAIKAN: Disamakan nama kategorinya agar pemetaan filter links berfungsi -->
+              <button onclick="selectCategory('portal_tka')" data-category="portal_tka" class="category-tab inline-flex lg:flex items-center justify-between w-auto lg:w-full px-4 py-2.5 text-xs font-bold rounded-xl bg-slate-100 text-slate-600 dark:bg-slate-800 dark:text-slate-400 hover:bg-slate-200">
                 <span class="flex items-center gap-2"><i class="fa-solid fa-laptop-code text-rose-500"></i> Asesmen & TKA</span> 
-                <span id="badge-ujian" class="ml-1.5 bg-slate-200 dark:bg-slate-700 px-1.5 py-0.5 rounded text-[10px] font-mono">0</span>
+                <span id="badge-portal_tka" class="ml-1.5 bg-slate-200 dark:bg-slate-700 px-1.5 py-0.5 rounded text-[10px] font-mono">0</span>
               </button>
               
               <!-- Tab Menu: Peralatan PDF -->
@@ -345,7 +345,7 @@
 
               <!-- Navigasi Tab Mini khusus Peralatan PDF -->
               <nav class="flex overflow-x-auto no-scrollbar gap-1.5 bg-slate-100 dark:bg-slate-900 p-1.5 rounded-2xl" aria-label="Navigasi PDF">
-                <button onclick="switchPdfSubTab('merge')" id="btn-pdf-merge" class="flex-shrink-0 flex-1 py-2 px-3 rounded-xl text-xs font-black transition bg-white dark:bg-slate-800 text-blue-600 shadow-xs"><i class="fa-solid fa-object-group mr-1"></i> Gabung</button>
+                <button onclick="switchPdfSubTab('merge')" id="btn-pdf-merge" class="flex-shrink-0 flex-1 py-2 px-3 rounded-xl text-xs font-black transition bg-white dark:bg-slate-800 text-blue-600 shadow-sm"><i class="fa-solid fa-object-group mr-1"></i> Gabung</button>
                 <button onclick="switchPdfSubTab('split')" id="btn-pdf-split" class="flex-shrink-0 flex-1 py-2 px-3 rounded-xl text-xs font-semibold transition text-slate-500 hover:text-slate-800 dark:hover:text-slate-200"><i class="fa-solid fa-scissors mr-1"></i> Pisah</button>
                 <button onclick="switchPdfSubTab('compress')" id="btn-pdf-compress" class="flex-shrink-0 flex-1 py-2 px-3 rounded-xl text-xs font-semibold transition text-slate-500 hover:text-slate-800 dark:hover:text-slate-200"><i class="fa-solid fa-compress mr-1"></i> Kompres</button>
                 <button onclick="switchPdfSubTab('img2pdf')" id="btn-pdf-img2pdf" class="flex-shrink-0 flex-1 py-2 px-3 rounded-xl text-xs font-semibold transition text-slate-500 hover:text-slate-800 dark:hover:text-slate-200"><i class="fa-solid fa-image mr-1"></i> Gambar ➜ PDF</button>
@@ -429,7 +429,7 @@
               <div id="sub-pdf-text2pdf" class="hidden space-y-4">
                 <div>
                   <label class="block text-[9px] font-black uppercase text-slate-400 mb-1">Tulis Naskah / Dokumen Teks</label>
-                  <textarea id="pdf-text-input-body" rows="6" placeholder="Ketik atau tempelkan teks penting di sini..." class="w-full text-xs p-3 rounded-xl border dark:bg-slate-900 dark:text-white dark:border-slate-700 outline-none focus:ring-1 focus:ring-blue-500 leading-relaxed"></textarea>
+                  <textarea id="pdf-text-input-body" rows="6" placeholder="Ketik atau tempelkan teks penting di sini..." class="w-full text-xs p-3 rounded-xl border bg-slate-50 dark:bg-slate-900 dark:text-white dark:border-slate-700 outline-none focus:ring-1 focus:ring-blue-500 leading-relaxed"></textarea>
                 </div>
                 <div>
                   <label class="block text-[9px] font-black uppercase text-slate-400 mb-1">Nama File PDF</label>
@@ -775,7 +775,7 @@
           <textarea id="new-link-desc" rows="2" placeholder="Deskripsi Singkat Layanan" class="w-full text-sm p-3 rounded-xl border bg-slate-50 dark:bg-slate-900 dark:text-white dark:border-slate-700 outline-none focus:ring-2 focus:ring-blue-500"></textarea>
           <div class="grid grid-cols-2 gap-3">
             <select id="new-link-category" class="w-full text-sm p-3 rounded-xl border bg-slate-50 dark:bg-slate-900 dark:text-white dark:border-slate-700 outline-none font-bold focus:ring-2 focus:ring-blue-500 cursor-pointer">
-              <option value="utama">Dapodik Utama</option><option value="verval">Sistem Verval</option><option value="keuangan">Keuangan</option><option value="guru">Layanan GTK</option><option value="kepegawaian">ASN</option><option value="ujian">Asesmen & TKA</option><option value="daerah">Portal Daerah</option>
+              <option value="utama">Dapodik Utama</option><option value="verval">Sistem Verval</option><option value="keuangan">Keuangan</option><option value="guru">Layanan GTK</option><option value="kepegawaian">ASN</option><option value="portal_tka">Asesmen & TKA</option><option value="daerah">Portal Daerah</option>
             </select>
             <select id="new-link-icon" class="w-full text-sm p-3 rounded-xl border bg-slate-50 dark:bg-slate-900 dark:text-white dark:border-slate-700 outline-none font-bold focus:ring-2 focus:ring-blue-500 cursor-pointer">
               <option value="fa-globe">Globe/Web</option><option value="fa-database">Database</option><option value="fa-id-card">Kartu Identitas</option><option value="fa-computer">Komputer</option><option value="fa-wallet">Keuangan</option>
@@ -859,26 +859,7 @@
     <!-- TOAST NOTIFICATION -->
     <div id="toast" class="fixed bottom-5 right-5 z-50 transform translate-y-4 opacity-0 pointer-events-none transition-all duration-300 flex items-center gap-2.5 bg-slate-900/95 dark:bg-white text-white dark:text-slate-900 text-xs py-3.5 px-5 rounded-xl shadow-xl border border-slate-800 dark:border-slate-100 font-sans">
       <i id="toast-icon" class="fa-solid fa-circle-check text-emerald-400 dark:text-emerald-600 text-base"></i>
-      <span id="toast-message" class="font-bold">Notifikasi sistem aktif</span>
-    </div>
-
-    <!-- MASTER SECURE PIN OVERLAY SCREEN -->
-    <div id="master-pin-screen" class="fixed inset-0 z-50 bg-slate-950/95 flex flex-col items-center justify-center transition-all duration-500">
-      <div class="text-center p-8 max-w-sm mx-4 rounded-3xl bg-slate-900 border border-slate-800 shadow-2xl space-y-6 font-sans">
-        <div class="w-20 h-20 mx-auto rounded-full bg-blue-600/15 border border-blue-500/30 flex items-center justify-center text-blue-500 text-3xl">
-          <i class="fa-solid fa-shield-halved animate-pulse"></i>
-        </div>
-        <div class="space-y-2">
-          <h3 id="pin-screen-title" class="text-white font-space font-black text-lg">Buat PIN Master Anda</h3>
-          <p id="pin-screen-desc" class="text-xs text-slate-400 leading-relaxed">Masukkan 6-digit PIN Keamanan untuk mengenkripsi seluruh kredensial 2FA dan memo secara aman di komputer ini.</p>
-        </div>
-        <div class="space-y-4">
-          <input type="password" id="pin-input-field" maxlength="6" pattern="[0-9]*" inputmode="numeric" placeholder="••••••" onkeydown="if(event.key === 'Enter') handlePinSubmit()" class="w-full tracking-[1.5em] text-center text-2xl font-bold p-3 bg-slate-950 border border-slate-800 rounded-xl text-white outline-none focus:border-blue-500 focus:ring-2 focus:ring-blue-500/30 transition" />
-          <button id="btn-submit-pin" onclick="handlePinSubmit()" class="w-full py-3 bg-blue-600 hover:bg-blue-700 text-white font-bold rounded-xl text-xs transition duration-200 shadow-lg shadow-blue-500/20">
-            <span id="pin-btn-text">Atur PIN Baru</span>
-          </button>
-        </div>
-      </div>
+      <span id="toast-message" class="font-bold">Notifikasi sistem aktif...</span>
     </div>
 
     <!-- Script Load Order (Modular) -->
