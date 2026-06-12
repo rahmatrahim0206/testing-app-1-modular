@@ -32,7 +32,6 @@ function secureRead(key) {
   }
 }
 
-// Prosedur Ekspor File Pencadangan
 function exportBackupData() { 
   const payload = {
     links: linksData,
@@ -56,7 +55,6 @@ function triggerImportData() {
   if (importInput) importInput.click(); 
 }
 
-// Prosedur Impor File Pemulihan
 function importBackupData(e) { 
   if (e.target.files[0]) { 
     const r = new FileReader();
@@ -83,13 +81,12 @@ function importBackupData(e) {
   } 
 }
 
-// Tombol Prosedur Reset Darurat (Menghapus Data Sensitif dari Browser Instan)
 function triggerEmergencyReset() {
   showCustomConfirm(
     "Lakukan Atur Ulang Darurat?", 
     "PERINGATAN SENSITIF: Tindakan ini akan menghapus seluruh data Anda secara permanen dari browser ini, termasuk kunci keamanan 2FA, catatan memo, agenda, serta tautan kustom. Sistem akan dimuat ulang ke pengaturan awal pabrik.", 
     () => {
-      const keysToRemove = ['links', 'agendas', 'notes', 'auth-keys', 'wa-templates'];
+      const keysToRemove = ['links', 'agendas', 'notes', 'auth-keys', 'wa-templates', 'pin-hash'];
       keysToRemove.forEach(key => {
         localStorage.removeItem(CONFIG.STORAGE_PREFIX + key);
       });
