@@ -54,13 +54,13 @@ function renderDynamicLinks() {
     'keuangan': { title: 'BOS & Keuangan', icon: 'fa-wallet', color: 'text-amber-500' },
     'guru': { title: 'Layanan GTK', icon: 'fa-chalkboard-user', color: 'text-indigo-500' },
     'kepegawaian': { title: 'Layanan ASN', icon: 'fa-id-card-clip', color: 'text-sky-500' },
-    'ujian': { title: 'Asesmen (ANBK)', icon: 'fa-laptop-code', color: 'text-rose-500' },
+    'ujian': { title: 'Asesmen (ANBK) & TKA', icon: 'fa-laptop-code', color: 'text-rose-500' },
     'daerah': { title: 'Portal Dinas & Daerah', icon: 'fa-city', color: 'text-purple-500' }
   };
 
   const q = document.getElementById('search-input').value.toLowerCase().trim();
   let total = 0;
-  let counts = { semua: 0, utama: 0, verval: 0, keuangan: 0, guru: 0, kepegawaian: 0, "2fa_auth": 0, ujian: 0, daerah: 0 };
+  let counts = { semua: 0, utama: 0, verval: 0, keuangan: 0, guru: 0, kepegawaian: 0, pdf_tools: 6, ping_tools: 6, speedtest: 1, "2fa_auth": 0, ujian: 0, daerah: 0 };
 
   linksData.forEach(l => {
     if (l.title.toLowerCase().includes(q) || l.desc.toLowerCase().includes(q)) {
@@ -70,6 +70,7 @@ function renderDynamicLinks() {
   });
   counts['semua'] = total;
   counts['2fa_auth'] = authenticatorKeys.length;
+  counts['ping_tools'] = endpointsToMonitor.length;
 
   Object.keys(counts).forEach(k => {
     const b = document.getElementById(`badge-${k}`);
@@ -117,15 +118,32 @@ function selectCategory(cat) {
   activeCategory = cat;
   const p2Fa = document.getElementById('panel-2fa-main-auth');
   const pLinks = document.getElementById('panel-links-main-wrapper');
-  if (p2Fa && pLinks) {
-    if (cat === '2fa_auth') {
-      p2Fa.classList.remove('hidden');
-      pLinks.classList.add('hidden');
-      renderAuthenticatorKeys();
-    } else {
-      p2Fa.classList.add('hidden');
-      pLinks.classList.remove('hidden');
-    }
+  const pPdf = document.getElementById('panel-pdf-tools-wrapper');
+  const pPing = document.getElementById('panel-ping-tools-wrapper');
+  const pSpeed = document.getElementById('panel-speedtest-wrapper');
+
+  if (!p2Fa || !pLinks || !pPdf || !pPing || !pSpeed) return;
+
+  // Sembunyikan Semua Panel Workspace Terlebih Dahulu
+  p2Fa.classList.add('hidden');
+  pLinks.classList.add('hidden');
+  pPdf.classList.add('hidden');
+  pPing.classList.add('hidden');
+  pSpeed.classList.add('hidden');
+
+  // Seleksi Panel Tampil
+  if (cat === '2fa_auth') {
+    p2Fa.classList.remove('hidden');
+    renderAuthenticatorKeys();
+  } else if (cat === 'pdf_tools') {
+    pPdf.classList.remove('hidden');
+  } else if (cat === 'ping_tools') {
+    pPing.classList.remove('hidden');
+    pingAllEndpoints();
+  } else if (cat === 'speedtest') {
+    pSpeed.classList.remove('hidden');
+  } else {
+    pLinks.classList.remove('hidden');
   }
   
   document.querySelectorAll('.category-tab').forEach(t => {
@@ -146,7 +164,14 @@ function filterLinksOrKeys() {
   const s = document.getElementById('search-input'); 
   const c = document.getElementById('clear-search');
   if (s && c) s.value.trim().length > 0 ? c.classList.remove('hidden') : c.classList.add('hidden');
-  activeCategory === '2fa_auth' ? renderAuthenticatorKeys() : renderDynamicLinks();
+  
+  if (activeCategory === '2fa_auth') {
+    renderAuthenticatorKeys();
+  } else if (activeCategory === 'pdf_tools' || activeCategory === 'ping_tools' || activeCategory === 'speedtest') {
+    // No search filters for direct workspaces
+  } else {
+    renderDynamicLinks();
+  }
 }
 
 function clearSearchInput() { 
@@ -155,46 +180,24 @@ function clearSearchInput() {
   filterLinksOrKeys(); 
 }
 
-function switchAsistenTab(t) {
-  ['agenda', 'kalender', 'alat'].forEach(id => {
+// --- SISTEM WORKSPACE ASISTEN KANAN ---
+function switchCalendarMemoTab(t) {
+  ['calendar', 'memo'].forEach(id => {
     const btn = document.getElementById(`btn-tab-${id}`);
     const panel = document.getElementById(`panel-tab-${id}`);
-    
     if (btn) {
       if (id === t) {
-        btn.className = "flex-1 py-2 px-2 rounded-xl text-[11px] font-extrabold bg-white dark:bg-slate-800 text-blue-600 shadow-sm";
+        btn.className = "flex-1 py-2 px-1 rounded-xl text-[11px] font-extrabold bg-white dark:bg-slate-800 text-blue-600 shadow-sm";
       } else {
-        btn.className = "flex-1 py-2 px-2 rounded-xl text-[11px] font-bold text-slate-500 hover:text-slate-800 dark:hover:text-slate-200";
+        btn.className = "flex-1 py-2 px-1 rounded-xl text-[11px] font-bold text-slate-500 hover:text-slate-800 dark:hover:text-slate-200";
       }
     }
-    if (panel) {
-      panel.classList.toggle('hidden', id !== t);
-    }
+    if (panel) panel.classList.toggle('hidden', id !== t);
   });
-  
-  if (t === 'kalender') {
-    initCalendar();
-  }
+  if (t === 'calendar') initCalendar();
 }
 
-function switchSubTab(t) {
-  ['tugas', 'memo'].forEach(id => {
-    const btn = document.getElementById(`btn-sub-${id}`);
-    const panel = document.getElementById(`sub-panel-${id}`);
-    
-    if (btn) {
-      if (id === t) {
-        btn.className = "flex-1 py-1.5 text-[10px] font-black bg-white dark:bg-slate-800 text-blue-600 shadow-xs rounded-lg";
-      } else {
-        btn.className = "flex-1 py-1.5 text-[10px] font-bold text-slate-500";
-      }
-    }
-    if (panel) {
-      panel.classList.toggle('hidden', id !== t);
-    }
-  });
-}
-
+// Dialog Pembuka / Penutup Modal
 function openAddAgendaModal() {
   const m = document.getElementById('add-agenda-modal');
   if (m) {
@@ -243,6 +246,7 @@ function closeAddLinkModal() {
   }
 }
 
+// --- AGENDA KERJA ---
 function saveAgenda() { secureSave(CONFIG.STORAGE_PREFIX + 'agendas', agendaData); }
 
 function renderAgenda() {
@@ -256,7 +260,7 @@ function renderAgenda() {
     const d = document.createElement('div');
     d.className = 'flex justify-between items-start gap-2 p-2 bg-slate-50 dark:bg-slate-900 rounded-xl border border-slate-100 dark:border-slate-800 group';
     d.innerHTML = `
-      <label class="flex gap-2 flex-1 cursor-pointer">
+      <label class="flex gap-2 flex-1 cursor-pointer text-slate-750 dark:text-slate-200">
         <input type="checkbox" ${t.done?'checked':''} onchange="toggleTaskDone('${t.id}')" class="mt-1 h-3 w-3 rounded text-blue-600 focus:ring-blue-500">
         <span class="text-xs ${t.done?'line-through opacity-50':''}">${t.text}</span>
       </label>
@@ -305,6 +309,7 @@ function updateCountdownTask() {
   if(btn && p) btn.onclick = () => toggleTaskDone(p.id);
 }
 
+// --- KALENDER KERJA ---
 function initCalendar() {
   const names = ["Januari","Februari","Maret","April","Mei","Juni","Juli","Agustus","September","Oktober","November","Desember"];
   const y = currentDateObj.getFullYear();
@@ -327,6 +332,7 @@ function initCalendar() {
 function prevMonth() { currentDateObj.setMonth(currentDateObj.getMonth()-1); initCalendar(); }
 function nextMonth() { currentDateObj.setMonth(currentDateObj.getMonth()+1); initCalendar(); }
 
+// --- BUKU SAKU (MEMO CATATAN) ---
 function renderQuickNotes() {
   const c = document.getElementById('quick-notes-list');
   if(!c) return;
@@ -357,6 +363,7 @@ function addQuickNote() {
   }
 }
 
+// --- BROADCAST WHATSAPP & PWA KIT ---
 function populateWaSelect() {
   const s = document.getElementById('wa-template-select');
   if(s) {
@@ -470,34 +477,6 @@ function deleteTemplate(id) {
   }, 'fa-trash-can');
 }
 
-const manifestJsonText = `{
-  "name": "DAPO-HUB SPENTIG",
-  "short_name": "DAPO-HUB",
-  "description": "Portal Integrasi Operator Dapodik & IT SMP Negeri 3 Makassar",
-  "start_url": "index.html",
-  "display": "standalone",
-  "background_color": "#f8fafc",
-  "theme_color": "#2563eb",
-  "icons": [
-    {
-      "src": "https://cdn-icons-png.flaticon.com/512/2210/2210143.png",
-      "sizes": "512x512",
-      "type": "image/png"
-    }
-  ]
-}`;
-
-const serviceWorkerJsText = `
-  const CACHE_NAME = 'dapohub-cache-v3';
-  const ASSETS_TO_CACHE = ['./', './index.html', './manifest.json'];
-  self.addEventListener('install', (e) => e.waitUntil(caches.open(CACHE_NAME).then((c) => c.addAll(ASSETS_TO_CACHE))));
-  self.addEventListener('activate', (e) => e.waitUntil(caches.keys().then((keys) => Promise.all(keys.filter(k => k !== CACHE_NAME).map(k => caches.delete(k))))));
-  self.addEventListener('fetch', (e) => {
-    if (!e.request.url.startsWith('http')) return;
-    e.respondWith(caches.match(e.request).then((r) => r || fetch(e.request).catch(() => caches.match('./index.html'))));
-  });
-`;
-
 function downloadPwaFile(fileType) {
   let content = "", filename = "", mimeType = "";
   if (fileType === 'manifest') {
@@ -562,3 +541,31 @@ function startCutOffCountdown() {
   updateCountdown();
   setInterval(updateCountdown, 1000);
 }
+
+const manifestJsonText = `{
+  "name": "DAPO-HUB SPENTIG",
+  "short_name": "DAPO-HUB",
+  "description": "Portal Integrasi Operator Dapodik & IT SMP Negeri 3 Makassar",
+  "start_url": "index.html",
+  "display": "standalone",
+  "background_color": "#f8fafc",
+  "theme_color": "#2563eb",
+  "icons": [
+    {
+      "src": "https://cdn-icons-png.flaticon.com/512/2210/2210143.png",
+      "sizes": "512x512",
+      "type": "image/png"
+    }
+  ]
+}`;
+
+const serviceWorkerJsText = `
+  const CACHE_NAME = 'dapohub-cache-v3';
+  const ASSETS_TO_CACHE = ['./', './index.html', './manifest.json'];
+  self.addEventListener('install', (e) => e.waitUntil(caches.open(CACHE_NAME).then((c) => c.addAll(ASSETS_TO_CACHE))));
+  self.addEventListener('activate', (e) => e.waitUntil(caches.keys().then((keys) => Promise.all(keys.filter(k => k !== CACHE_NAME).map(k => caches.delete(k))))));
+  self.addEventListener('fetch', (e) => {
+    if (!e.request.url.startsWith('http')) return;
+    e.respondWith(caches.match(e.request).then((r) => r || fetch(e.request).catch(() => caches.match('./index.html'))));
+  });
+`;
