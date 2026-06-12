@@ -134,66 +134,72 @@
       <div class="grid grid-cols-1 lg:grid-cols-12 gap-6 sm:gap-8 mt-6">
         
         <!-- KOLOM KIRI (Navigasi Kategori & Penghitung Mundur) -->
-    <aside class="lg:col-span-3 lg:sticky lg:top-20 h-fit space-y-6">
-      <div class="bg-white dark:bg-slate-800 p-4 rounded-3xl border border-slate-200/60 dark:border-slate-700/60 shadow-md relative z-30">
-        <h3 class="text-[10px] font-black uppercase tracking-widest text-slate-400 mb-4 flex items-center gap-1.5"><i class="fa-solid fa-layer-group text-blue-500"></i> Kategori</h3>
-        <nav class="flex lg:flex-col overflow-x-auto no-scrollbar gap-2 lg:gap-1.5" id="category-tabs">
-          <button onclick="selectCategory('semua')" data-category="semua" class="category-tab inline-flex lg:flex items-center justify-between w-auto lg:w-full px-4 py-2.5 text-xs font-bold rounded-xl bg-blue-600 text-white shadow-md">
-            <span class="flex items-center gap-2"><i class="fa-solid fa-border-all"></i> Semua</span> 
-            <span id="badge-semua" class="ml-1.5 bg-white/20 px-1.5 py-0.5 rounded text-[10px] font-mono">0</span>
-          </button>
-          <button onclick="selectCategory('utama')" data-category="utama" class="category-tab inline-flex lg:flex items-center justify-between w-auto lg:w-full px-4 py-2.5 text-xs font-bold rounded-xl bg-slate-100 text-slate-600 dark:bg-slate-800 dark:text-slate-400 hover:bg-slate-200">
-            <span class="flex items-center gap-2"><i class="fa-solid fa-database text-blue-500"></i> Dapodik Utama</span> 
-            <span id="badge-utama" class="ml-1.5 bg-slate-200 dark:bg-slate-700 px-1.5 py-0.5 rounded text-[10px] font-mono">0</span>
-          </button>
-          <button onclick="selectCategory('verval')" data-category="verval" class="category-tab inline-flex lg:flex items-center justify-between w-auto lg:w-full px-4 py-2.5 text-xs font-bold rounded-xl bg-slate-100 text-slate-600 dark:bg-slate-800 dark:text-slate-400 hover:bg-slate-200">
-            <span class="flex items-center gap-2"><i class="fa-solid fa-user-shield text-emerald-500"></i> Sistem Verval</span> 
-            <span id="badge-verval" class="ml-1.5 bg-slate-200 dark:bg-slate-700 px-1.5 py-0.5 rounded text-[10px] font-mono">0</span>
-          </button>
-          <button onclick="selectCategory('keuangan')" data-category="keuangan" class="category-tab inline-flex lg:flex items-center justify-between w-auto lg:w-full px-4 py-2.5 text-xs font-bold rounded-xl bg-slate-100 text-slate-600 dark:bg-slate-800 dark:text-slate-400 hover:bg-slate-200">
-            <span class="flex items-center gap-2"><i class="fa-solid fa-wallet text-amber-500"></i> Keuangan BOSP</span> 
-            <span id="badge-keuangan" class="ml-1.5 bg-slate-200 dark:bg-slate-700 px-1.5 py-0.5 rounded text-[10px] font-mono">0</span>
-          </button>
-          <button onclick="selectCategory('guru')" data-category="guru" class="category-tab inline-flex lg:flex items-center justify-between w-auto lg:w-full px-4 py-2.5 text-xs font-bold rounded-xl bg-slate-100 text-slate-600 dark:bg-slate-800 dark:text-slate-400 hover:bg-slate-200">
-            <span class="flex items-center gap-2"><i class="fa-solid fa-chalkboard-user text-indigo-500"></i> Pendidik (GTK)</span> 
-            <span id="badge-guru" class="ml-1.5 bg-slate-200 dark:bg-slate-700 px-1.5 py-0.5 rounded text-[10px] font-mono">0</span>
-          </button>
-          <button onclick="selectCategory('kepegawaian')" data-category="kepegawaian" class="category-tab inline-flex lg:flex items-center justify-between w-auto lg:w-full px-4 py-2.5 text-xs font-bold rounded-xl bg-slate-100 text-slate-600 dark:bg-slate-800 dark:text-slate-400 hover:bg-slate-200">
-            <span class="flex items-center gap-2"><i class="fa-solid fa-id-card-clip text-sky-500"></i> Kepegawaian ASN</span> 
-            <span id="badge-kepegawaian" class="ml-1.5 bg-slate-200 dark:bg-slate-700 px-1.5 py-0.5 rounded text-[10px] font-mono">0</span>
-          </button>
-          
-          <!-- Tab Menu: Peralatan PDF -->
-          <button onclick="selectCategory('pdf_tools')" data-category="pdf_tools" class="category-tab inline-flex lg:flex items-center justify-between w-auto lg:w-full px-4 py-2.5 text-xs font-bold rounded-xl bg-slate-100 text-slate-600 dark:bg-slate-800 dark:text-slate-400 hover:bg-slate-200">
-            <span class="flex items-center gap-2"><i class="fa-solid fa-file-pdf text-rose-500"></i> Ruang Kerja PDF</span> 
-            <span id="badge-pdf_tools" class="ml-1.5 bg-slate-200 dark:bg-slate-700 px-1.5 py-0.5 rounded text-[10px] font-mono">6</span>
-          </button>
+        <aside class="lg:col-span-3 lg:sticky lg:top-20 h-fit space-y-6">
+          <div class="bg-white dark:bg-slate-800 p-4 rounded-3xl border border-slate-200/60 dark:border-slate-700/60 shadow-md relative z-30">
+            <h3 class="text-[10px] font-black uppercase tracking-widest text-slate-400 mb-4 flex items-center gap-1.5"><i class="fa-solid fa-layer-group text-blue-500"></i> Kategori</h3>
+            <nav class="flex lg:flex-col overflow-x-auto no-scrollbar gap-2 lg:gap-1.5" id="category-tabs">
+              <button onclick="selectCategory('semua')" data-category="semua" class="category-tab inline-flex lg:flex items-center justify-between w-auto lg:w-full px-4 py-2.5 text-xs font-bold rounded-xl bg-blue-600 text-white shadow-md">
+                <span class="flex items-center gap-2"><i class="fa-solid fa-border-all"></i> Semua</span> 
+                <span id="badge-semua" class="ml-1.5 bg-white/20 px-1.5 py-0.5 rounded text-[10px] font-mono">0</span>
+              </button>
+              <button onclick="selectCategory('utama')" data-category="utama" class="category-tab inline-flex lg:flex items-center justify-between w-auto lg:w-full px-4 py-2.5 text-xs font-bold rounded-xl bg-slate-100 text-slate-600 dark:bg-slate-800 dark:text-slate-400 hover:bg-slate-200">
+                <span class="flex items-center gap-2"><i class="fa-solid fa-database text-blue-500"></i> Dapodik Utama</span> 
+                <span id="badge-utama" class="ml-1.5 bg-slate-200 dark:bg-slate-700 px-1.5 py-0.5 rounded text-[10px] font-mono">0</span>
+              </button>
+              <button onclick="selectCategory('verval')" data-category="verval" class="category-tab inline-flex lg:flex items-center justify-between w-auto lg:w-full px-4 py-2.5 text-xs font-bold rounded-xl bg-slate-100 text-slate-600 dark:bg-slate-800 dark:text-slate-400 hover:bg-slate-200">
+                <span class="flex items-center gap-2"><i class="fa-solid fa-user-shield text-emerald-500"></i> Sistem Verval</span> 
+                <span id="badge-verval" class="ml-1.5 bg-slate-200 dark:bg-slate-700 px-1.5 py-0.5 rounded text-[10px] font-mono">0</span>
+              </button>
+              <button onclick="selectCategory('keuangan')" data-category="keuangan" class="category-tab inline-flex lg:flex items-center justify-between w-auto lg:w-full px-4 py-2.5 text-xs font-bold rounded-xl bg-slate-100 text-slate-600 dark:bg-slate-800 dark:text-slate-400 hover:bg-slate-200">
+                <span class="flex items-center gap-2"><i class="fa-solid fa-wallet text-amber-500"></i> Keuangan BOSP</span> 
+                <span id="badge-keuangan" class="ml-1.5 bg-slate-200 dark:bg-slate-700 px-1.5 py-0.5 rounded text-[10px] font-mono">0</span>
+              </button>
+              <button onclick="selectCategory('guru')" data-category="guru" class="category-tab inline-flex lg:flex items-center justify-between w-auto lg:w-full px-4 py-2.5 text-xs font-bold rounded-xl bg-slate-100 text-slate-600 dark:bg-slate-800 dark:text-slate-400 hover:bg-slate-200">
+                <span class="flex items-center gap-2"><i class="fa-solid fa-chalkboard-user text-indigo-500"></i> Pendidik (GTK)</span> 
+                <span id="badge-guru" class="ml-1.5 bg-slate-200 dark:bg-slate-700 px-1.5 py-0.5 rounded text-[10px] font-mono">0</span>
+              </button>
+              <button onclick="selectCategory('kepegawaian')" data-category="kepegawaian" class="category-tab inline-flex lg:flex items-center justify-between w-auto lg:w-full px-4 py-2.5 text-xs font-bold rounded-xl bg-slate-100 text-slate-600 dark:bg-slate-800 dark:text-slate-400 hover:bg-slate-200">
+                <span class="flex items-center gap-2"><i class="fa-solid fa-id-card-clip text-sky-500"></i> Kepegawaian ASN</span> 
+                <span id="badge-kepegawaian" class="ml-1.5 bg-slate-200 dark:bg-slate-700 px-1.5 py-0.5 rounded text-[10px] font-mono">0</span>
+              </button>
+              
+              <!-- Tab Menu: Asesmen & Ujian (ANBK/TKA) -->
+              <button onclick="selectCategory('ujian')" data-category="ujian" class="category-tab inline-flex lg:flex items-center justify-between w-auto lg:w-full px-4 py-2.5 text-xs font-bold rounded-xl bg-slate-100 text-slate-600 dark:bg-slate-800 dark:text-slate-400 hover:bg-slate-200">
+                <span class="flex items-center gap-2"><i class="fa-solid fa-laptop-code text-rose-500"></i> Asesmen & TKA</span> 
+                <span id="badge-ujian" class="ml-1.5 bg-slate-200 dark:bg-slate-700 px-1.5 py-0.5 rounded text-[10px] font-mono">0</span>
+              </button>
+              
+              <!-- Tab Menu: Peralatan PDF -->
+              <button onclick="selectCategory('pdf_tools')" data-category="pdf_tools" class="category-tab inline-flex lg:flex items-center justify-between w-auto lg:w-full px-4 py-2.5 text-xs font-bold rounded-xl bg-slate-100 text-slate-600 dark:bg-slate-800 dark:text-slate-400 hover:bg-slate-200">
+                <span class="flex items-center gap-2"><i class="fa-solid fa-file-pdf text-rose-500"></i> Ruang Kerja PDF</span> 
+                <span id="badge-pdf_tools" class="ml-1.5 bg-slate-200 dark:bg-slate-700 px-1.5 py-0.5 rounded text-[10px] font-mono">6</span>
+              </button>
 
-          <!-- Tab Menu: Monitor Server / Latency Ping -->
-          <button onclick="selectCategory('ping_tools')" data-category="ping_tools" class="category-tab inline-flex lg:flex items-center justify-between w-auto lg:w-full px-4 py-2.5 text-xs font-bold rounded-xl bg-slate-100 text-slate-600 dark:bg-slate-800 dark:text-slate-400 hover:bg-slate-200">
-            <span class="flex items-center gap-2"><i class="fa-solid fa-network-wired text-sky-500"></i> Tes Latensi Server</span> 
-            <span id="badge-ping_tools" class="ml-1.5 bg-slate-200 dark:bg-slate-700 px-1.5 py-0.5 rounded text-[10px] font-mono">0</span>
-          </button>
+              <!-- Tab Menu: Monitor Server / Latency Ping -->
+              <button onclick="selectCategory('ping_tools')" data-category="ping_tools" class="category-tab inline-flex lg:flex items-center justify-between w-auto lg:w-full px-4 py-2.5 text-xs font-bold rounded-xl bg-slate-100 text-slate-600 dark:bg-slate-800 dark:text-slate-400 hover:bg-slate-200">
+                <span class="flex items-center gap-2"><i class="fa-solid fa-network-wired text-sky-500"></i> Tes Latensi Server</span> 
+                <span id="badge-ping_tools" class="ml-1.5 bg-slate-200 dark:bg-slate-700 px-1.5 py-0.5 rounded text-[10px] font-mono">0</span>
+              </button>
 
-          <!-- Tab Baru: Uji Kecepatan Internet (Speedtest) -->
-          <button onclick="selectCategory('speedtest')" data-category="speedtest" class="category-tab inline-flex lg:flex items-center justify-between w-auto lg:w-full px-4 py-2.5 text-xs font-bold rounded-xl bg-slate-100 text-slate-600 dark:bg-slate-800 dark:text-slate-400 hover:bg-slate-200">
-            <span class="flex items-center gap-2"><i class="fa-solid fa-gauge-high text-amber-500"></i> Speedtest Jaringan</span> 
-            <span id="badge-speedtest" class="ml-1.5 bg-slate-200 dark:bg-slate-700 px-1.5 py-0.5 rounded text-[10px] font-mono">1</span>
-          </button>
+              <!-- Tab Baru: Uji Kecepatan Internet (Speedtest) -->
+              <button onclick="selectCategory('speedtest')" data-category="speedtest" class="category-tab inline-flex lg:flex items-center justify-between w-auto lg:w-full px-4 py-2.5 text-xs font-bold rounded-xl bg-slate-100 text-slate-600 dark:bg-slate-800 dark:text-slate-400 hover:bg-slate-200">
+                <span class="flex items-center gap-2"><i class="fa-solid fa-gauge-high text-amber-500"></i> Speedtest Jaringan</span> 
+                <span id="badge-speedtest" class="ml-1.5 bg-slate-200 dark:bg-slate-700 px-1.5 py-0.5 rounded text-[10px] font-mono">1</span>
+              </button>
 
-          <button onclick="selectCategory('2fa_auth')" data-category="2fa_auth" class="category-tab inline-flex lg:flex items-center justify-between w-auto lg:w-full px-4 py-2.5 text-xs font-bold rounded-xl bg-slate-100 text-slate-600 dark:bg-slate-800 dark:text-slate-400 hover:bg-slate-200">
-            <span class="flex items-center gap-2"><i class="fa-solid fa-shield-halved text-blue-500"></i> Kunci Keamanan</span> 
-            <span id="badge-2fa_auth" class="ml-1.5 bg-slate-200 dark:bg-slate-700 px-1.5 py-0.5 rounded text-[10px] font-mono">0</span>
-          </button>
-          
-          <button onclick="selectCategory('daerah')" data-category="daerah" class="category-tab inline-flex lg:flex items-center justify-between w-auto lg:w-full px-4 py-2.5 text-xs font-bold rounded-xl bg-slate-100 text-slate-600 dark:bg-slate-800 dark:text-slate-400 hover:bg-slate-200">
-            <span class="flex items-center gap-2"><i class="fa-solid fa-city text-purple-500"></i> Portal Daerah</span> 
-            <span id="badge-daerah" class="ml-1.5 bg-slate-200 dark:bg-slate-700 px-1.5 py-0.5 rounded text-[10px] font-mono">0</span>
-          </button>
-        </nav>
-      </div>
+              <button onclick="selectCategory('2fa_auth')" data-category="2fa_auth" class="category-tab inline-flex lg:flex items-center justify-between w-auto lg:w-full px-4 py-2.5 text-xs font-bold rounded-xl bg-slate-100 text-slate-600 dark:bg-slate-800 dark:text-slate-400 hover:bg-slate-200">
+                <span class="flex items-center gap-2"><i class="fa-solid fa-shield-halved text-blue-500"></i> Kunci Keamanan</span> 
+                <span id="badge-2fa_auth" class="ml-1.5 bg-slate-200 dark:bg-slate-700 px-1.5 py-0.5 rounded text-[10px] font-mono">0</span>
+              </button>
+              
+              <button onclick="selectCategory('daerah')" data-category="daerah" class="category-tab inline-flex lg:flex items-center justify-between w-auto lg:w-full px-4 py-2.5 text-xs font-bold rounded-xl bg-slate-100 text-slate-600 dark:bg-slate-800 dark:text-slate-400 hover:bg-slate-200">
+                <span class="flex items-center gap-2"><i class="fa-solid fa-city text-purple-500"></i> Portal Daerah</span> 
+                <span id="badge-daerah" class="ml-1.5 bg-slate-200 dark:bg-slate-700 px-1.5 py-0.5 rounded text-[10px] font-mono">0</span>
+              </button>
+            </nav>
+          </div>
 
-      <!-- WIDGET BATAS CUT-OFF DAPODIK -->
+          <!-- WIDGET BATAS CUT-OFF DAPODIK -->
           <div class="bg-white dark:bg-slate-800 rounded-3xl p-5 border border-slate-200/60 dark:border-slate-700/60 shadow-md relative overflow-hidden z-20">
             <div class="absolute right-0 bottom-0 opacity-5 translate-x-4 translate-y-4 text-slate-400 dark:text-slate-300">
               <i class="fa-solid fa-hourglass-half text-9xl"></i>
@@ -769,7 +775,7 @@
           <textarea id="new-link-desc" rows="2" placeholder="Deskripsi Singkat Layanan" class="w-full text-sm p-3 rounded-xl border bg-slate-50 dark:bg-slate-900 dark:text-white dark:border-slate-700 outline-none focus:ring-2 focus:ring-blue-500"></textarea>
           <div class="grid grid-cols-2 gap-3">
             <select id="new-link-category" class="w-full text-sm p-3 rounded-xl border bg-slate-50 dark:bg-slate-900 dark:text-white dark:border-slate-700 outline-none font-bold focus:ring-2 focus:ring-blue-500 cursor-pointer">
-              <option value="utama">Dapodik Utama</option><option value="verval">Sistem Verval</option><option value="keuangan">Keuangan</option><option value="guru">Layanan GTK</option><option value="kepegawaian">ASN</option><option value="daerah">Portal Daerah</option>
+              <option value="utama">Dapodik Utama</option><option value="verval">Sistem Verval</option><option value="keuangan">Keuangan</option><option value="guru">Layanan GTK</option><option value="kepegawaian">ASN</option><option value="ujian">Asesmen & TKA</option><option value="daerah">Portal Daerah</option>
             </select>
             <select id="new-link-icon" class="w-full text-sm p-3 rounded-xl border bg-slate-50 dark:bg-slate-900 dark:text-white dark:border-slate-700 outline-none font-bold focus:ring-2 focus:ring-blue-500 cursor-pointer">
               <option value="fa-globe">Globe/Web</option><option value="fa-database">Database</option><option value="fa-id-card">Kartu Identitas</option><option value="fa-computer">Komputer</option><option value="fa-wallet">Keuangan</option>
