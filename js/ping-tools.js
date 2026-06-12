@@ -8,7 +8,7 @@ var endpointsToMonitor = [
   { name: "Verifikasi Pendidik (VervalPTK)", url: "https://vervalptk.data.kemendikdasmen.go.id", lastPing: "-", status: "unknown" },
   { name: "Portal Anggaran BOSP Salur", url: "https://bosp.kemendikdasmen.go.id", lastPing: "-", status: "unknown" },
   { name: "Portal SIMPKB Paspor", url: "https://paspor-gtk.simpkb.id", lastPing: "-", status: "unknown" },
-  { name: "Direktorat Asesmen ANBK", url: "https://anbk.kemendikdasmen.go.id", lastPing: "-", status: "unknown" }
+  { name: "Sipintar PIP Kemendikdasmen", url: "https://pip.kemendikdasmen.go.id", lastPing: "-", status: "unknown" }
 ];
 
 var autoPingIntervalId = null;
