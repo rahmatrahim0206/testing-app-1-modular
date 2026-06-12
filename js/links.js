@@ -2,7 +2,6 @@
 // PORTAL LINKS MANAGEMENT LOGIC & OFFLINE SEED FALLBACK
 // ==========================================================
 
-// Data cadangan bawaan luring jika default-links.json tidak terjangkau (CORS/Protokol file://)
 const defaultSeedLinks = [
   { "id": "seed-local-dapo", "title": "Aplikasi Dapodik Lokal", "url": "http://localhost:5774", "desc": "Akses cepat langsung menuju sistem Aplikasi Dapodik yang terpasang di komputer ini (Port 5774).", "category": "utama", "icon": "fa-laptop", "system": true },
   { "id": "seed-1", "title": "Beranda Dapodik", "url": "https://dapo.kemendikdasmen.go.id", "desc": "Pusat rilis pembaruan installer, patch aplikasi, surat edaran resmi, dan panduan Dapodik.", "category": "utama", "icon": "fa-globe", "system": true },
@@ -22,7 +21,6 @@ const defaultSeedLinks = [
   { "id": "seed-10", "title": "Verval PTK", "url": "https://vervalptk.data.kemendikdasmen.go.id/site/login", "desc": "Verifikasi validitas NIK PTK, penerbitan NUPTK baru, dan perbaikan identitas guru.", "category": "verval", "icon": "fa-id-card", "system": true },
   { "id": "seed-11", "title": "Verval PD (Peserta Didik)", "url": "https://vervalpd.data.kemendikdasmen.go.id/", "desc": "Penerbitan dan perbaikan NISN, pengesahan NIK siswa terintegrasi langsung dengan database Dukcapil.", "category": "verval", "icon": "fa-id-card", "system": true },
   { "id": "seed-12", "title": "Verval SP (Satuan Pendidikan)", "url": "https://vervalsp.data.kemendikdasmen.go.id/verval/index.php/cberanda/index/", "desc": "Pengelolaan profil dan spasial koordinat wilayah Satuan Pendidikan Anda.", "category": "verval", "icon": "fa-globe", "system": true },
-  { "id": "seed-13", "title": "Verval TIK", "url": "https://vervaltio.data.kemendikdasmen.go.id", "desc": "Verifikasi sarana komputer, proktor, jaringan internet, dan daya tampung kesiapan ujian ANBK.", "category": "verval", "icon": "fa-computer", "system": true },
   { "id": "seed-14", "title": "Pusdatin PD (Pusat Data Peserta Didik)", "url": "https://sdm.data.kemendikdasmen.go.id/", "desc": "Akses sinkronisasi residu data kependudukan peserta didik, perbaikan tingkat ganda, dan kelulusan.", "category": "verval", "icon": "fa-id-card", "system": true },
   { "id": "seed-15", "title": "Sipintar PIP (Program Indonesia Pintar)", "url": "https://pip.kemendikdasmen.go.id/home_v1", "desc": "Pemantauan penyaluran beasiswa PIP, pengajuan usulan baru, dan unduh SK NOMINASI/pemberian.", "category": "keuangan", "icon": "fa-wallet", "system": true },
   { "id": "seed-16", "title": "ARKAS Kemendikdasmen", "url": "https://arkas.kemendikdasmen.go.id", "desc": "Aplikasi Rencana Kegiatan dan Anggaran Sekolah untuk penyusunan dan pelaporan dana BOSP.", "category": "keuangan", "icon": "fa-wallet", "system": true },
@@ -34,19 +32,16 @@ const defaultSeedLinks = [
   { "id": "seed-21", "title": "Ruang GTK", "url": "https://akun.pendidikan.go.id/login?flow=fa87d033-975e-48c1-8315-b75b0be1dfb2", "desc": "Layanan bagi guru untuk pelatihan mandiri, pengisian e-Kinerja (SKP), dan penyusunan modul ajar.", "category": "guru", "icon": "fa-chalkboard-user", "system": true },
   { "id": "seed-22", "title": "Akun Belajar.id", "url": "https://belajar.id", "desc": "Aktivasi, reset kata sandi, dan sinkronisasi akun Google pembelajaran guru & siswa.", "category": "guru", "icon": "fa-chalkboard-user", "system": true },
   { "id": "seed-23", "title": "Rumah Belajar", "url": "https://rumah.pendidikan.go.id/", "desc": "Portal media pembelajaran internet gratis yang menyajikan bahan belajar lengkap dari Kemendikbud.", "category": "guru", "icon": "fa-school-flag", "system": true },
-  { "id": "seed-kbbi", "title": "KBBI Daring Kemendikdasmen", "url": "https://kbbi.kemendikdasmen.go.id/", "desc": "Kamus Besar Bahasa Indonesia (KBBI) elektronik resmi Resmi Pusat Pembinaan dan Pengembangan Bahasa.", "category": "guru", "icon": "fa-spell-check", "system": true },
+  { "id": "seed-kbbi", "title": "KBBI Daring Kemendikdasmen", "url": "https://kbbi.kemendikdasmen.go.id/", "desc": "Kamus Besar Bahasa Indonesia (KBBI) resmi Pusat Pembinaan dan Pengembangan Bahasa.", "category": "guru", "icon": "fa-spell-check", "system": true },
   { "id": "seed-myasn", "title": "MyASN BKN", "url": "https://myasn.bkn.go.id", "desc": "Portal utama satu pintu layanan kepegawaian mandiri ASN nasional dari Badan Kepegawaian Negara.", "category": "kepegawaian", "icon": "fa-id-card", "system": true },
   { "id": "seed-ekinerja", "title": "e-Kinerja BKN", "url": "https://kinerja.bkn.go.id", "desc": "Sistem pengelolaan kinerja pegawai ASN terintegrasi untuk penyusunan dan penilaian Sasaran Kinerja Pegawai (SKP).", "category": "kepegawaian", "icon": "fa-chalkboard-user", "system": true },
-  { "id": "seed-sipp", "title": "SIPP Makassar (SIM Kepegawaian)", "url": "https://sipp.makassar.go.id", "desc": "Sistem Informasi Pelayanan Personil BKPSDMD Kota Makassar untuk pencatatan berkas fisik dan administrasi ASN.", "category": "kepegawaian", "icon": "fa-city", "system": true },
-  { "id": "seed-esakti", "title": "e-Sakti Makassar (Presensi & TPP)", "url": "https://esakti.makassar.go.id", "desc": "Layanan mandiri presensi ASN daerah Makassar, pemantauan kedisiplinan kerja, dan realisasi TPP harian.", "category": "kepegawaian", "icon": "fa-network-wired", "system": true },
   { "id": "seed-simpeg", "title": "SIMPEG Kemendikdasmen", "url": "https://simpeg.bkpsdmd.makassarkota.go.id/", "desc": "Sistem Informasi Manajemen Kepegawaian internal Kementerian Pendidikan, Kebudayaan, Riset, dan Teknologi.", "category": "kepegawaian", "icon": "fa-id-card", "system": true },
-  { "id": "seed-24", "title": "Portal Web ANBK", "url": "https://anbk.kemendikdasmen.go.id", "desc": "Penetapan status pelaksanaan, data proktor, komputer client, penjadwalan, dan cetak kartu login.", "category": "ujian", "icon": "fa-computer", "system": true },
-  { "id": "seed-25", "title": "Bio-AN SMP", "url": "https://bioansmp.kemendikdasmen.go.id", "desc": "Sistem penarikan data calon peserta Asesmen Nasional (DNT) dari pangkalan Dapodik secara terintegrasi.", "category": "ujian", "icon": "fa-id-card", "system": true },
-  { "id": "seed-26", "title": "Portal TKA & Asesmen Bakat", "url": "https://tka.kemendikdasmen.go.id/", "desc": "Pusat Asesmen Pendidikan untuk pelaksanaan Tes Kemampuan Akademik (TKA) dan simulasi ujian siswa.", "category": "ujian", "icon": "fa-computer", "system": true },
-  { "id": "seed-27", "title": "Dinas Pendidikan Makassar", "url": "https://disdik.makassarkota.go.id", "desc": "Situs web utama Disdik Kota Makassar. Menyediakan informasi mutasi siswa, regulasi, dan kebijakan daerah.", "category": "daerah", "icon": "fa-city", "system": true },
-  { "id": "seed-28", "title": "Portal PPDB Makassar", "url": "https://spmb.makassarkota.go.id/cloginsekolahx", "desc": "Penerimaan Peserta Didik Baru wilayah SMP Negeri Kota Makassar (Jalur Zonasi, Afirmasi, Prestasi).", "category": "daerah", "icon": "fa-city", "system": true },
-  { "id": "seed-29", "title": "Uji Kecepatan Koneksi", "url": "https://speedtest.net", "desc": "Uji kehandalan latensi internet Lab Komputer sebelum melakukan sinkronisasi massal.", "category": "daerah", "icon": "fa-network-wired", "system": true },
-  { "id": "seed-mbg", "title": "Makan Bergizi Gratis (MBG) Portal", "url": "https://mbg.pdm.kemendikdasmen.go.id/portal", "desc": "Portal integrasi dan pendataan nasional implementasi program Makan Bergizi Gratis di sekolah.", "category": "daerah", "icon": "fa-utensils", "system": true }
+  { "id": "seed-24", "title": "Portal ANBK", "url": "https://anbk.kemendikdasmen.go.id", "desc": "Penetapan status pelaksanaan, data proktor, komputer client, penjadwalan, dan cetak kartu login.", "category": "portal_tka", "icon": "fa-computer", "system": true },
+  { "id": "seed-25", "title": "TKA & Asesmen Bakat", "url": "https://tka.kemendikdasmen.go.id/", "desc": "Pusat Asesmen Pendidikan untuk pelaksanaan Tes Kemampuan Akademik (TKA) dan simulasi ujian siswa.", "category": "portal_tka", "icon": "fa-computer", "system": true },
+  { "id": "seed-26", "title": "Dinas Pendidikan Makassar", "url": "https://disdik.makassarkota.go.id", "desc": "Situs web utama Disdik Kota Makassar. Menyediakan informasi mutasi siswa, regulasi, dan kebijakan daerah.", "category": "daerah", "icon": "fa-city", "system": true },
+  { "id": "seed-27", "title": "Portal PPDB Makassar", "url": "https://spmb.makassarkota.go.id/cloginsekolahx", "desc": "Penerimaan Peserta Didik Baru wilayah SMP Negeri Kota Makassar (Jalur Zonasi, Afirmasi, Prestasi).", "category": "daerah", "icon": "fa-city", "system": true },
+  { "id": "seed-28", "title": "Uji Kecepatan Koneksi", "url": "https://speedtest.net", "desc": "Uji kehandalan latensi internet Lab Komputer sebelum melakukan sinkronisasi massal.", "category": "daerah", "icon": "fa-network-wired", "system": true },
+  { "id": "seed-mbg", "title": "Makan Bergizi Gratis (MBG) Portal", "url": "https://mbg.pdm.kemendikdasmen.go.id/portal", "desc": "Portal integrasi andal implementasi program Makan Bergizi Gratis di sekolah.", "category": "daerah", "icon": "fa-utensils", "system": true }
 ];
 
 function saveLinks() { 
@@ -59,7 +54,10 @@ function saveCustomLinkLocal() {
   const d = document.getElementById('new-link-desc').value.trim();
   const c = document.getElementById('new-link-category').value;
   const i = document.getElementById('new-link-icon').value;
-  if (!t || !u || !d) return showToast("Harap lengkapi semua formulir!", "warning");
+  if (!t || !u || !d) {
+    if (typeof showToast === 'function') showToast("Harap lengkapi semua formulir!", "warning");
+    return;
+  }
   
   linksData.push({ 
     id: `link-${Date.now()}`, 
@@ -74,7 +72,7 @@ function saveCustomLinkLocal() {
   saveLinks();
   renderDynamicLinks();
   closeAddLinkModal();
-  showToast("Tautan kustom berhasil ditambahkan!");
+  if (typeof showToast === 'function') showToast("Tautan kustom berhasil ditambahkan!");
   
   document.getElementById('new-link-title').value = '';
   document.getElementById('new-link-url').value = '';
@@ -82,30 +80,33 @@ function saveCustomLinkLocal() {
 }
 
 function deleteCustomLink(id) {
-  showCustomConfirm("Hapus Tautan?", "Tautan kustom ini akan dihapus secara permanen.", () => {
-    linksData = linksData.filter(l => l.id !== id);
-    saveLinks();
-    renderDynamicLinks();
-    showToast("Tautan berhasil dihapus.");
-  }, 'fa-trash-can');
+  if (typeof showCustomConfirm === 'function') {
+    showCustomConfirm("Hapus Tautan?", "Tautan kustom ini akan dihapus secara permanen.", () => {
+      linksData = linksData.filter(l => l.id !== id);
+      saveLinks();
+      renderDynamicLinks();
+      if (typeof showToast === 'function') showToast("Tautan berhasil dihapus.");
+    }, 'fa-trash-can');
+  }
 }
 
 function resetToDefaultLinks() {
-  showCustomConfirm("Reset Portal?", "Semua tautan kustom Anda akan terhapus dan kembali ke setelan pabrik.", () => {
-    fetch('data/default-links.json')
-      .then(res => res.json())
-      .then(data => {
-        linksData = data;
-        saveLinks();
-        renderDynamicLinks();
-        showToast("Sistem berhasil di-reset!");
-      })
-      .catch(() => {
-        // Fallback jika pemanggilan fetch offline gagal (tidak memakai server web)
-        linksData = [...defaultSeedLinks]; 
-        saveLinks();
-        renderDynamicLinks();
-        showToast("Sistem berhasil di-reset!");
-      });
-  }, 'fa-arrows-rotate');
+  if (typeof showCustomConfirm === 'function') {
+    showCustomConfirm("Reset Portal?", "Semua tautan kustom Anda akan terhapus dan kembali ke setelan pabrik.", () => {
+      fetch('data/default-links.json')
+        .then(res => res.json())
+        .then(data => {
+          linksData = data;
+          saveLinks();
+          renderDynamicLinks();
+          if (typeof showToast === 'function') showToast("Sistem berhasil di-reset!");
+        })
+        .catch(() => {
+          linksData = [...defaultSeedLinks]; 
+          saveLinks();
+          renderDynamicLinks();
+          if (typeof showToast === 'function') showToast("Sistem berhasil di-reset!");
+        });
+    }, 'fa-arrows-rotate');
+  }
 }
